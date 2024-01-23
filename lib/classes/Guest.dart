@@ -1,11 +1,12 @@
 class Guest{
   String _name;
-  int _phoneNumber=0;
+  String _phoneNumber= '';
   bool _isInvited = false;
 
   Guest(this._name);
 
   Guest.withNumber(this._name, this._phoneNumber);
+  Guest.withInvite(this._name, this._phoneNumber, this._isInvited);
 
   bool get isInvited => _isInvited;
 
@@ -13,9 +14,9 @@ class Guest{
     _isInvited = value;
   }
 
-  int get phoneNumber => _phoneNumber;
+  String get phoneNumber => _phoneNumber;
 
-  set phoneNumber(int value) {
+  set phoneNumber(String value) {
     _phoneNumber = value;
   }
 
