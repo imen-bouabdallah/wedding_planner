@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wedding_planner/screens/guestList.dart';
+import 'package:wedding_planner/screens/reminderList.dart';
 import 'package:wedding_planner/screens/todoList.dart';
 
 void main() {
@@ -49,6 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return [diffrence, diffrencerestH, diffrenceRestM];
   }
 
+
   @override
   Widget build(BuildContext context) {
 
@@ -69,6 +71,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
             if (index==0){ //reminders
+              Navigator.push(
+                context,
+                  MaterialPageRoute(builder: (context) => const ReminderList()),
+              );
 
             }
             else if (index==1){ //shopping list
@@ -122,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
-            margin: EdgeInsets.all(5),
+            margin: const EdgeInsets.all(5),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               border: Border.all(),
@@ -132,11 +138,12 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 //Image(),
                 Text('${countdown()[0]}days : ${countdown()[1]} hours : ${countdown()[2]} minutes '),
+
               ],
             ),
 
           ),
-          Expanded(child: Text("XX Guests not invited Yet")),
+          const Expanded( child: Text("XX Guests not invited Yet")),
 
         ],
       ),
