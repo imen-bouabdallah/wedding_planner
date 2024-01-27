@@ -234,10 +234,16 @@ class _Todo_listState extends State<Todo_list> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Add a todo'),
-          content: const TextField(
+          content: TextFormField(
             //controller: _textFieldController,
-            decoration: InputDecoration(hintText: 'Type your todo'),
+            decoration: const InputDecoration(hintText: 'Type your todo'),
             autofocus: true,
+            validator: (value){
+              if(value == null || value.isEmpty) {
+                return 'Please enter a text';
+              }
+              return null;
+            },
           ),
           actions: <Widget>[
             OutlinedButton(

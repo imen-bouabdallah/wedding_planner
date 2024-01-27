@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wedding_planner/screens/Settings.dart';
 import 'package:wedding_planner/screens/guestList.dart';
 import 'package:wedding_planner/screens/reminderList.dart';
 import 'package:wedding_planner/screens/todoList.dart';
@@ -60,7 +61,12 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         //title: Text(widget.title),
         actions: [
-          IconButton(onPressed: (){}, icon: const Icon(Icons.settings)),
+          IconButton(onPressed: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const Settings()),
+            );
+          }, icon: const Icon(Icons.settings)),
         ],
       ),
 

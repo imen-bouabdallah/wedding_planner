@@ -10,7 +10,7 @@ class AddReminder extends StatefulWidget {
 }
 
 class _AddReminderState extends State<AddReminder> {
-  DateTime _reminderDate = DateTime.now();
+  final DateTime _today = DateTime.now();
   bool _activeDate = false;
 
   final _dateControler = TextEditingController();
@@ -21,11 +21,11 @@ class _AddReminderState extends State<AddReminder> {
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: _reminderDate,
-        firstDate: _reminderDate,
+        initialDate: _today,
+        firstDate: _today,
         lastDate: DateTime(2101));
-    if (picked != null && picked != _reminderDate) {
-      _dateControler.text = picked.day.toString() + '/' + picked.month.toString() + '/' + picked.year.toString();
+    if (picked != null && picked != _today) {
+      _dateControler.text = '${picked.day}/${picked.month}/${picked.year}';
 
     }
   }
@@ -36,11 +36,52 @@ class _AddReminderState extends State<AddReminder> {
 
     );
     if (picked != null) {
-      ///TODO
-      //if(!_dateControler.text.isEmpty && _dateControler.text)
+      ///TODO check if the date is today check the time
+      //if(!_dateControler.text.isEmpty && DateTime.parse(_dateControler.text)==_today)
+      //_timeControler.text = '';
       _timeControler.text =
-          picked.hour.toString() + ':' + picked.minute.toString();
+          '${picked.hour}:${picked.minute}';
     }
+  }
+
+  _save(){
+
+  }
+
+  _confirmExit() {
+    showDialog<void>(
+        context: context,
+        //T: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: const Text('Save or discard changes?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Cancel'),
+              ),
+              const Divider(),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  // _addTodoItem(_textFieldController.text);
+                },
+                child: const Text('Discard'),
+              ),
+              const Divider(),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  // _addTodoItem(_textFieldController.text);
+                },
+                child: const Text('Save'),
+              ),
+            ],
+          );
+        }
+    );
   }
 
   @override
@@ -62,24 +103,28 @@ class _AddReminderState extends State<AddReminder> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Navigator.pop(context);
+            if(_dateControler.text.isNotEmpty || _titleControler.text.isNotEmpty || _timeControler.text.isNotEmpty) {
+              _confirmExit();
+            } else {
+              Navigator.pop(context);
+            }
           },
         ),
 
         actions: [
           IconButton(
               onPressed: () {
-
+                _save();
               },
               icon: const Icon(Icons.save)),
         ],
       ),
       body: Container(
-        margin: EdgeInsets.all(4),
+        margin: const EdgeInsets.all(4),
 
         child: Column(
           children: [
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             TextFormField(
               controller: _titleControler,
               decoration: const InputDecoration(
@@ -87,7 +132,7 @@ class _AddReminderState extends State<AddReminder> {
                 labelText: 'Enter reminder\'s title',
               ),
             ),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             Row(
               children: [
                 Expanded(
@@ -96,20 +141,25 @@ class _AddReminderState extends State<AddReminder> {
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Enter the date',
+                      fillColor: Colors.blue
                     ),
+                    validator: (value){
+                      if (value == null || value.isEmpty){
+                        return 'Please enter some text';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 
-                SizedBox(width: 10,),
-                Expanded(
-                  child: IconButton(onPressed: () {
-                    _selectDate(context);
-                  },
-                      icon: const Icon(Icons.calendar_month)),
-                )
+                const SizedBox(width: 10,),
+                IconButton(onPressed: () {
+                  _selectDate(context);
+                },
+                    icon: const Icon(Icons.calendar_month))
               ],
             ),
-            SizedBox(height:10),
+            const SizedBox(height:10),
            Row(
               children: [
                 Expanded(
