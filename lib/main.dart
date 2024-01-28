@@ -139,11 +139,28 @@ class _MyHomePageState extends State<MyHomePage> {
               borderRadius: BorderRadius.circular(5),
               border: Border.all(),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            height: 350,
+            child: Stack(
               children: [
-                //Image(),
-                Text('${countdown()[0]}days : ${countdown()[1]} hours : ${countdown()[2]} minutes '),
+                Image.asset('assets/invitation_fr.png',
+                fit: BoxFit.cover,
+                  width: double.infinity,
+                ),
+                Positioned(
+                  bottom: 50,
+                    left: 20,
+                    right: 0,
+                    top: 270,
+                    child:
+                      Text('${countdown()[0]}days : ${countdown()[1]} hours : ${countdown()[2]} minutes\n ',
+                         style:TextStyle(
+                           fontSize: 24,
+                          // backgroundColor: Colors.black,
+                           background: Paint()..color=Colors.black,
+                           color: Colors.white
+                    ) ,
+                      strutStyle: StrutStyle(height: 2,forceStrutHeight: true),)
+                ),
 
               ],
             ),

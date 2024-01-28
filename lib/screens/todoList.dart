@@ -279,38 +279,40 @@ class _Todo_listState extends State<Todo_list> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar,
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 30,
-          ),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            const SizedBox(
+              height: 30,
+            ),
 
-          Expanded(
-            child: ListView.builder(
-
+            ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),//to make it scroll with the column instead of by itself
+              shrinkWrap: true,
                 itemCount: _items.length,
                 itemBuilder: (context, index){
                   return _buildToDo(_items[index], index);
                 }),
-          ),
-          const Divider(indent: 10, endIndent: 10),
+            const Divider(indent: 10, endIndent: 10),
 
-          ///if the task is done it's moved down the list
-          Row(
-            children: [
-              Text('   Completed (${completed.toString()})'),
-            ],
-          ),
+            ///if the task is done it's moved down the list
+            Row(
+              children: [
+                Text('   Completed (${completed.toString()})'),
+              ],
+            ),
 
-          Expanded(
-            child: ListView.builder(
+            ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
               itemCount: _completedItems.length,
                 itemBuilder: (context, index){
                   return _buildToDo(_completedItems[index], index);
                 }),
-          ),
-          const SizedBox(height: 50),
-        ],
+            const SizedBox(height: 50),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _createTodo(),
