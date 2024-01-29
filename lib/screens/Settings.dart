@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:wedding_planner/classes/Theme.dart';
 
-class Settings extends StatelessWidget {
+class Settings extends StatefulWidget {
   const Settings({super.key});
+
+  @override
+  State<Settings> createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  bool _reminder = true;
 
   @override
   Widget build(BuildContext context) {
@@ -15,27 +23,30 @@ class Settings extends StatelessWidget {
         children: [
           TextButton(onPressed:(){},
               child:  const Text("Change wedding date",
-              style: TextStyle(
-                color: Colors.black
-              ),)
+                style: TextStyle(
+                    color: Colors.black
+                ),)
           ),
 
           const Divider(),
 
-          TextButton(
-              onPressed: (){},
-              child:  Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text("Reminders  ",
-                    style: TextStyle(
-                        color: Colors.black
-                    ),),
-                  Switch(value: false, onChanged: (value){})
-                ],
-              )
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text("Reminders  ",
+                style: TextStyle(
+                    color: Colors.black
+                ),),
+              Switch(
+                  value: _reminder,
+                  activeColor: green_,
+                  onChanged: (bool value){
+                    _reminder = value;
+                  })
+            ],
           ),
+
 
           const Divider(),
 
@@ -49,8 +60,8 @@ class Settings extends StatelessWidget {
                         color: Colors.black
                     ),),
                   Icon(Icons.link),
-              ],
-          )),
+                ],
+              )),
 
           const Divider(),
 
@@ -65,7 +76,7 @@ class Settings extends StatelessWidget {
                         color: Colors.red
                     ),),
                   Icon(Icons.delete_forever,
-                  color: Colors.red),
+                      color: Colors.red),
                 ],
               )
           ),
@@ -77,3 +88,4 @@ class Settings extends StatelessWidget {
     );
   }
 }
+

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wedding_planner/classes/Guest.dart';
+import 'package:wedding_planner/classes/Theme.dart';
 
 class Guest_list extends StatefulWidget {
   const Guest_list({Key? key}) : super(key: key);
@@ -39,24 +39,14 @@ class _Guest_listState extends State<Guest_list> {
     Guest("guest name3"),
   ];
 
-  Widget guest(Guest guest){
-    return  Container(
-      color:  guest.isInvited ? Colors.green : Colors.transparent,
-      child: guest.isInvited ? ///if the guest is invited
-      Row(
-          children: [
-            const SizedBox(width: 5,),
-            Expanded(child: Text(guest.name)),
-            const Text(
-              'Invited',
-              style: TextStyle(
-                fontStyle: FontStyle.italic,
-              ),),
-            const SizedBox(width: 10,),
-          ]
-      )
-          : ///if guest not yet invited
-      Row(
+  Widget _buildGuest(Guest guest, int index){
+    return ListTile(
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: goldAccent, width: 1),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      tileColor:  guest.isInvited ? Colors.green : Colors.transparent,
+      subtitle: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const SizedBox(width: 5,),
@@ -73,7 +63,7 @@ class _Guest_listState extends State<Guest_list> {
               }
             },
             icon: const Icon(Icons.call),)
-          : // if phone number not available
+              : // if phone number not available
           IconButton(
               onPressed: (){
 
@@ -87,7 +77,7 @@ class _Guest_listState extends State<Guest_list> {
         ],
       ),
     );
-  } //guest tile
+  }
 
   Widget _createGuest(){
     return  Dialog.fullscreen(
@@ -197,9 +187,9 @@ class _Guest_listState extends State<Guest_list> {
                 children: [
                   OutlinedButton(onPressed: (){
                     Navigator.of(context).pop();
-                  }, child: Text('Cancel')),
+                  }, child: const Text('Cancel')),
                   const SizedBox(width: 10,),
-                  FilledButton(onPressed: (){}, child: Text('Save')),
+                  FilledButton(onPressed: (){}, child: const Text('Save')),
                 ],
               ),
             ),
@@ -241,28 +231,24 @@ class _Guest_listState extends State<Guest_list> {
       ),
 
 
-      body: ListView(
-        children: [
-          const SizedBox(height:40,),
-          for(int i=0; i<guest_list.length; i++)
-            Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black
-                    ),
-                    borderRadius: const BorderRadius.all(Radius.circular(5)),
-                  ),
-                  child: guest(guest_list[i]),
-                ),
-                const SizedBox(height: 10,),
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 20,),
+            ListView.separated(
+                physics: const NeverScrollableScrollPhysics(),//to make it scroll with the column instead of by itself
+                shrinkWrap: true,
+              itemCount: guest_list.length,
+                itemBuilder: (context, index){
+                 return _buildGuest(guest_list[index], index);
+                },
+                separatorBuilder: (context, index) => const SizedBox(
+                  height: 10,
+                )
             ),
-          const SizedBox(height: 60),
-
-        ],
+            const SizedBox(height: 60,)
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => showDialog(context: context,

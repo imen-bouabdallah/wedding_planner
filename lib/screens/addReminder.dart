@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:wedding_planner/classes/Theme.dart';
 
 
 class AddReminder extends StatefulWidget {
@@ -66,7 +67,6 @@ class _AddReminderState extends State<AddReminder> {
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  // _addTodoItem(_textFieldController.text);
                 },
                 child: const Text('Discard'),
               ),
@@ -183,7 +183,7 @@ class _AddReminderState extends State<AddReminder> {
                   child: Switch(
                     // This bool value toggles the switch.
                     value: _activeDate,
-                    activeColor: Colors.green,
+                    activeColor: green_,
                     onChanged: (bool value) {
                       // This is called when the user toggles the switch.
                       setState(() {
