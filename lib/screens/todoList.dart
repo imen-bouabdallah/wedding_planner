@@ -165,13 +165,13 @@ class _Todo_listState extends State<Todo_list> {
                                 ),
                               ),
                               actions: <Widget>[
-                                TextButton(
+                                FilledButton(
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
                                   child: const Text('No'),
                                 ),
-                                TextButton(
+                                FilledButton(
                                   onPressed: () {
                                     setState(() {
                                       item.private = !item.private;

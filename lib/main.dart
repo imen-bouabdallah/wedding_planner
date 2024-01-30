@@ -1,7 +1,11 @@
+
+import 'package:date_count_down/date_count_down.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wedding_planner/classes/Theme.dart';
+import 'package:wedding_planner/style/Theme.dart';
 import 'package:wedding_planner/screens/Settings.dart';
+import 'package:wedding_planner/screens/addGuest.dart';
+import 'package:wedding_planner/screens/addReminder.dart';
 import 'package:wedding_planner/screens/guestList.dart';
 import 'package:wedding_planner/screens/reminderList.dart';
 import 'package:wedding_planner/screens/todoList.dart';
@@ -9,6 +13,13 @@ import 'package:wedding_planner/screens/todoList.dart';
 void main() {
   runApp(const ProviderScope(child:  MyApp()));
 }
+
+//to be able to use pushNamed
+Map<String, WidgetBuilder> routes = {
+  "/": (context) => const MyHomePage(),
+  "/addReminder": (context) => const AddReminder(),
+  "/addGuest" : (context)=> const AddGuest()
+};
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
@@ -25,8 +36,10 @@ class MyApp extends ConsumerWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),*/
-      home: const MyHomePage(),
+     // home: const MyHomePage(), //specified in route
       debugShowCheckedModeBanner: false,
+      routes: routes,
+      initialRoute: "/",
     );
   }
 }
@@ -44,17 +57,6 @@ class _MyHomePageState extends State<MyHomePage> {
   DateTime date =  DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour);
   DateTime weddingDate = DateTime.utc(2024, DateTime.july, 6, 0);
   int CurrentButton= 0; //for bottom navigation bar -- current selected button
-
-  countdown() {
-    ///calculate the countdown to the weeding
-    final diffrence = weddingDate.difference(date).inDays;
-    int diffrenceH = weddingDate.difference(date).inHours;
-    int diffrencerestH = ((diffrenceH/24 - diffrence)*24).round();
-    diffrenceH = weddingDate.difference(date).inMinutes;
-    int diffrenceRestM =( ( (diffrenceH/60)/24 - diffrence)*60 - diffrencerestH).round();
-
-    return [diffrence, diffrencerestH, diffrenceRestM];
-  }
 
 
   @override
@@ -146,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
             height: 350,
             child: Stack(
               children: [
-                Image.asset('assets/invitation_fr.png',
+                Image.asset('assets/invite/invitation_fr.png',
                 fit: BoxFit.cover,
                   width: double.infinity,
                 ),
@@ -156,14 +158,26 @@ class _MyHomePageState extends State<MyHomePage> {
                     right: 0,
                     top: 270,
                     child:
-                      Text('${countdown()[0]}days : ${countdown()[1]} hours : ${countdown()[2]} minutes\n ',
+                    CountDownText(
+                      due: weddingDate,
+                      finishedText: "Done",
+                      showLabel: true,
+                      longDateName: true,
+                      daysTextLong: " DAYS ",
+                      hoursTextLong: " HOURS ",
+                      minutesTextLong: " MINUTES ",
+                      secondsTextLong: " SECONDS ",
+                      style: TextStyle(color: Colors.black),
+
+                    )
+                      /*Text('${countdown()[0]}days : ${countdown()[1]} hours : ${countdown()[2]} minutes\n ',
                          style:TextStyle(
                            fontSize: 24,
                           // backgroundColor: Colors.black,
                            background: Paint()..color=Colors.black,
                            color: Colors.white
                     ) ,
-                      strutStyle: const StrutStyle(height: 2,forceStrutHeight: true),)
+                      strutStyle: const StrutStyle(height: 2,forceStrutHeight: true),)*/
                 ),
 
               ],

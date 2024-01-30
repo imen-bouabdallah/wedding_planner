@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wedding_planner/classes/Guest.dart';
-import 'package:wedding_planner/classes/Theme.dart';
+import 'package:wedding_planner/style/Theme.dart';
+import 'package:wedding_planner/screens/addGuest.dart';
 
 class Guest_list extends StatefulWidget {
   const Guest_list({Key? key}) : super(key: key);
@@ -12,15 +15,7 @@ class Guest_list extends StatefulWidget {
 
 class _Guest_listState extends State<Guest_list> {
   @override
-
-  final _guestNameController = TextEditingController();
   final _phoneNumberController = TextEditingController();
-  final _guestType = TextEditingController();
-  final _menNumber = TextEditingController();
-  final _womenNumber = TextEditingController();
-
-
-
 
   List guest_list = [Guest("guest name is very long so that we can test what would happend if hjghjgjgjhgjhgjh"),
     Guest("geust 2"),
@@ -40,174 +35,88 @@ class _Guest_listState extends State<Guest_list> {
   ];
 
   Widget _buildGuest(Guest guest, int index){
-    return ListTile(
-      shape: RoundedRectangleBorder(
-        side: BorderSide(color: goldAccent, width: 1),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      tileColor:  guest.isInvited ? Colors.green : Colors.transparent,
-      subtitle: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const SizedBox(width: 5,),
-          Expanded(child: Text(guest.name)),
-          //TODO if the number if availble else change the icon with a plus sign and the function would let you add the number
-          guest.phoneNumber.isNotEmpty ? //if phone number is available
-          IconButton(
-            onPressed: () async {
-              final call = Uri.parse('tel:${guest.phoneNumber}');
-              if (await canLaunchUrl(call)) {
-                launchUrl(call);
-              } else {
-                throw 'Could not launch $call';
-              }
-            },
-            icon: const Icon(Icons.call),)
-              : // if phone number not available
-          IconButton(
-              onPressed: (){
-
-              },
-              icon: const Icon(Icons.add_call)),
-          const SizedBox(width: 5,),
-          IconButton(
-            onPressed: (){},
-            icon: Icon(guest.isInvited ? Icons.email_outlined : Icons.email),),
-
-        ],
-      ),
-    );
-  }
-
-  Widget _createGuest(){
-    return  Dialog.fullscreen(
-
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-
-          //mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 20,),
-            const Row(
-              children: [
-                SizedBox(width: 5,),
-                 Text('Add Guest ',
-                style: TextStyle(
-                  fontSize: 20
-                ),),
-              ],
-            ),
-            const Divider(),
-            const SizedBox(height: 60,),
-            TextFormField(
-              controller: _guestNameController,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Guest Name',
-                  fillColor: Colors.blue
-              ),
-              validator: (value){
-                if (value == null || value.isEmpty){
-                  return 'Please enter the name';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 10,),
-            TextField(
-              controller: _phoneNumberController,
-              keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                  labelText: 'Phone Number',
-              ),
-            ),
-            const SizedBox(height: 10,),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-              children: [
-                Expanded(
-                    child: TextField(
-                      controller: _menNumber,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Men count',
-                      ),
-                    ) ),
-                const SizedBox(width: 10,),
-                Expanded(
-                    child: TextField(
-                      controller: _womenNumber,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Women count',
-                      ),
-                      onTapOutside: (event) {
-                        print('onTapOutside');
-                        FocusManager.instance.primaryFocus?.unfocus();
-                      },
-                    ),
-                )
-              ],
-            ),
-            const SizedBox(height: 15,),
-
-            Row(
-              children: [
-                DropdownMenu(
-                  onSelected: (value){
-
-
-                  },
-                  label: const Text('Category'),
-                  controller: _guestType,
-                  initialSelection: 'Family',
-                  requestFocusOnTap: false, //so that we have to choose from menu
-
-                  dropdownMenuEntries: const [
-                    DropdownMenuEntry(value: 'Family', label: 'Family'),
-                    DropdownMenuEntry(value: 'Friends', label: 'Friends'),
-                    DropdownMenuEntry(value: 'Neighbors', label: 'Neighbors'),
-                    DropdownMenuEntry(value: 'Others', label: 'Others'),],
-
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 50,),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  OutlinedButton(onPressed: (){
-                    Navigator.of(context).pop();
-                  }, child: const Text('Cancel')),
-                  const SizedBox(width: 10,),
-                  FilledButton(onPressed: (){}, child: const Text('Save')),
-                ],
-              ),
-            ),
-
-          ],
+    return Material(
+      child: ListTile(
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: goldAccent, width: 1),
+          borderRadius: BorderRadius.circular(5),
         ),
+        tileColor:  guest.isInvited ? green_ : Colors.transparent,
+        subtitle: Text(guest.name),
+        trailing: guest.phoneNumber.isNotEmpty ? //if phone number is available
+            IconButton(
+              onPressed: () async {
+                final call = Uri.parse('tel:${guest.phoneNumber}');
+                if (await canLaunchUrl(call)) {
+                  launchUrl(call);
+                } else {
+                  throw 'Could not launch $call';
+                }
+              },
+              icon: const Icon(Icons.call),)
+                : // if phone number not available
+            IconButton(
+                onPressed: (){
+                  showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Add phone number'),
+                        content: SingleChildScrollView(
+                          child: ListBody(
+                            children: <Widget>[
+                              TextField(
+                                controller: _phoneNumberController,
+                                keyboardType: TextInputType.phone,
+      
+                                decoration:  InputDecoration(
+                                  labelText: 'Phone Number',
+                                  suffixIcon: IconButton(     // Icon to
+                                    icon: const Icon(Icons.clear), // clear text
+                                    onPressed: (){_phoneNumberController.clear();}),
+                                  ),
+                                ),
+      
+      
+                              ]
+                          ),
+                        ),
+                        actions: <Widget>[
+                          OutlinedButton(
+                            onPressed: () {
+                              setState(() {
+                                _phoneNumberController.clear();
+                              });
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                          FilledButton(
+                            onPressed: () {
+                              setState(() {
+                                guest_list[index].phoneNumber = _phoneNumberController.text.toString();
+                                _phoneNumberController.clear();
+                              });
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Save'),
+                          ),
+                        ],
+                      ));
+                },
+                icon: const Icon(Icons.add_call)),
+      
       ),
     );
   }
-
 
   @override
+  void initState() {
+    _phoneNumberController.text='';
+    super.initState();
+  }
+  @override
   void dispose() {
-
-
-    _guestNameController.dispose();
-    _phoneNumberController.dispose();
-    _guestType.dispose();
+   _phoneNumberController.dispose();
     super.dispose();
   }
 
@@ -231,13 +140,44 @@ class _Guest_listState extends State<Guest_list> {
       ),
 
 
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20,),
-            ListView.separated(
-                physics: const NeverScrollableScrollPhysics(),//to make it scroll with the column instead of by itself
-                shrinkWrap: true,
+      body: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+
+              style: ButtonStyle(foregroundColor: MaterialStateProperty.all(gold),),
+              onPressed: (){
+                  //choose picture
+                 <PopupMenuEntry>[
+                  PopupMenuItem(
+                      child: TextButton(
+                          onPressed: (){
+
+                          },
+                          child: const Text('Edit'))),
+                  PopupMenuItem(
+                      child: TextButton(
+                          onPressed: (){ },
+                          child: const Text('Delete'))),
+                ];
+                  //_onShareXFileFromAssets(context, 'invite/invitation_fr.png');
+                },
+                child : const Row(
+                  children: [
+                    Text('Send an invitation'),
+                    SizedBox(width: 4,),
+                    Icon( Icons.email),
+                  ],
+                ),
+                ),
+              const SizedBox(width: 20,)
+            ],
+          ),
+          Expanded(
+            flex: 1,
+            child: ListView.separated(
               itemCount: guest_list.length,
                 itemBuilder: (context, index){
                  return _buildGuest(guest_list[index], index);
@@ -246,16 +186,56 @@ class _Guest_listState extends State<Guest_list> {
                   height: 10,
                 )
             ),
-            const SizedBox(height: 60,)
-          ],
-        ),
+          ),
+          const SizedBox(height: 55,)
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showDialog(context: context,
-        builder: (BuildContext context)=> _createGuest()),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddGuest()),
+          );
+        },
         child: const Icon(Icons.add),
       ),
     );
 
+  }
+
+  void _onShareXFileFromAssets(BuildContext context, String file) async {
+    final box = context.findRenderObject() as RenderBox?;
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final data = await rootBundle.load('assets/$file');
+    final buffer = data.buffer;
+    final shareResult = await Share.shareXFiles(
+      [
+        XFile.fromData(
+          buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
+          name: file,
+          mimeType: 'image/png',
+        ),
+      ],
+      sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+    );
+
+    scaffoldMessenger.showSnackBar(getResultSnackBar(shareResult));
+  }
+
+  SnackBar getResultSnackBar(ShareResult result) {
+    return SnackBar(
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+
+          //Text("Share result: ${result.status}"),
+          if (result.status == ShareResultStatus.success)
+           const Text("Invitation is shared!")
+          else
+            const Text("Failed to share")
+        ],
+      ),
+    );
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
-import 'package:wedding_planner/classes/Theme.dart';
+import 'package:wedding_planner/style/Theme.dart';
 
 
 class AddReminder extends StatefulWidget {
@@ -11,6 +11,8 @@ class AddReminder extends StatefulWidget {
 }
 
 class _AddReminderState extends State<AddReminder> {
+
+
   final DateTime _today = DateTime.now();
   bool _activeDate = false;
 
@@ -48,6 +50,8 @@ class _AddReminderState extends State<AddReminder> {
   _save(){
 
   }
+
+
 
   _confirmExit() {
     showDialog<void>(
@@ -96,9 +100,10 @@ class _AddReminderState extends State<AddReminder> {
 
   @override
   Widget build(BuildContext context) {
+    final data = ModalRoute.of(context)?.settings.arguments; //get the passed data
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Create reminder"),
+        title: data.toString().isEmpty? const Text("Create reminder") : const Text("Edit reminder"),
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: const Icon(Icons.close),
@@ -151,7 +156,7 @@ class _AddReminderState extends State<AddReminder> {
                     },
                   ),
                 ),
-                
+
                 const SizedBox(width: 10,),
                 IconButton(onPressed: () {
                   _selectDate(context);

@@ -1,9 +1,10 @@
 class Reminder {
   String _title;
   DateTime _date;
+  DateTime? _time;
 
 
-  Reminder(this._title, this._date);
+  Reminder(this._title, this._date, [_time]);
 
   String get title => _title;
 
@@ -15,5 +16,11 @@ class Reminder {
 
   set date(DateTime value) {
     _date = value;
+  }
+
+  DateTime? get time => _time;
+
+  set time(DateTime? value) {
+    _time = value;
   }
 }

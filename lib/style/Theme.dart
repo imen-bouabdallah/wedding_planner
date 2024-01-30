@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 Color gold = const Color(0xFFB79347); //buttobs
 Color goldAccent = const Color(0xFFDDD3C1);//overlay
 Color platinum = const Color(0xFFDEDDDE);
-Color dun = const Color(0xFFDBC9A3); //appbar
+Color dun = const Color(0xFFDBC9A3); //appbar //menu background
 Color floral = const Color(0xFFF6F2E8); //background
 Color dimGrey = const Color(0xFF6F6F6F);
 Color green_ = const Color(0xFF77AF9C);
@@ -16,6 +16,7 @@ ThemeData getAppTheme(BuildContext context, bool isDarkTheme) {
       useMaterial3: true,
       primaryColor: gold,
       hintColor: dimGrey,
+
 
       ///Scaffold
       scaffoldBackgroundColor: floral,
@@ -57,7 +58,7 @@ ThemeData getAppTheme(BuildContext context, bool isDarkTheme) {
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(gold), //button color
+         // backgroundColor: MaterialStateProperty.all(gold), //button color
           foregroundColor: MaterialStateProperty.all(Colors.white) //text + icon color
       ),
     ),
@@ -86,6 +87,12 @@ ThemeData getAppTheme(BuildContext context, bool isDarkTheme) {
     switchTheme: SwitchThemeData(
       overlayColor: MaterialStateProperty.all(goldAccent),
       trackColor: MaterialStateProperty.all(goldAccent),
+    ),
+
+
+    popupMenuTheme: PopupMenuThemeData(
+      color: dun,
+
     ),
 
 
@@ -119,6 +126,8 @@ ThemeData getAppTheme(BuildContext context, bool isDarkTheme) {
       labelMedium:  TextStyle(color: Colors.black),
       labelLarge:  TextStyle(color: Colors.black)
     ),
+
+    ///Change cursor color
     textSelectionTheme: TextSelectionThemeData(
       cursorColor: gold,
     ),

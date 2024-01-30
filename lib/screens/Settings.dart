@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wedding_planner/classes/Theme.dart';
+import 'package:wedding_planner/style/Theme.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -36,13 +36,14 @@ class _SettingsState extends State<Settings> {
             children: [
               const Text("Reminders  ",
                 style: TextStyle(
-                    color: Colors.black
+                    color: Colors.black,
+                  fontWeight: FontWeight.bold
                 ),),
               Switch(
                   value: _reminder,
                   activeColor: green_,
-                  onChanged: (bool value){
-                    _reminder = value;
+                  onChanged: (isOn){
+                    _reminder = isOn;
                   })
             ],
           ),
@@ -59,7 +60,7 @@ class _SettingsState extends State<Settings> {
                     style: TextStyle(
                         color: Colors.black
                     ),),
-                  Icon(Icons.link),
+                  Icon(Icons.link, color: Colors.black,),
                 ],
               )),
 

@@ -11,15 +11,70 @@ class ReminderList extends StatefulWidget {
 
 class _ReminderListState extends State<ReminderList> {
 
+  final List<Reminder> _reminders = [Reminder('do something', DateTime(2024, 5, 20))];
+
+  Future _confirmDelete(){
+    return showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Delete'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text("Are you sure you want to delete this reminder?"),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FilledButton(
+              onPressed: () {
+                Navigator.pop(context); //to close dialog
+                Navigator.pop(context); //to close popup menu
+              },
+              child: const Text('No'),
+            ),
+            FilledButton(
+              onPressed: () {
+
+                Navigator.pop(context); //to close dialog
+                Navigator.pop(context); //to close menu
+              },
+              child: const Text('Yes'),
+            ),
+          ],
+        ));
+  }
+
   Widget _createReminder(Reminder reminder){
     return ListTile(
-      onTap: (){
 
-      },
-      onLongPress: (){
-
-      },
-
+      title: Text(reminder.title),
+      subtitle: Text("${reminder.date.day.toString()}/${reminder.date.month.toString()}/${reminder.date.year.toString()} at ${reminder.date.hour.toString()}:${reminder.date.minute.toString()}"),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(onPressed: (){}, icon: const Icon(Icons.notifications_active)),
+          PopupMenuButton(
+            itemBuilder: (context)=> <PopupMenuEntry>[
+              PopupMenuItem(
+                  child: TextButton(
+                      onPressed: (){
+                        Navigator.pop(context);//close the popup menu
+                        Navigator.pushNamed(
+                        context,
+                        '/addReminder',
+                          arguments: reminder
+                      );
+                      },
+                      child: const Text('Edit'))),
+              PopupMenuItem(
+                  child: TextButton(
+                      onPressed: (){_confirmDelete();            },
+                      child: const Text('Delete'))),
+            ],
+          ),
+        ],
+      )
 
     );
   }
@@ -31,10 +86,11 @@ class _ReminderListState extends State<ReminderList> {
       appBar: AppBar(
         title: const Text("Reminders"),
       ),
-      body: ListView(
-        children: const [
-
-        ],
+      body: ListView.builder(
+        itemCount: _reminders.length,
+         itemBuilder: (context, item){
+           return _createReminder(_reminders[item]);
+         }
       ),
 
       floatingActionButton: FloatingActionButton(
