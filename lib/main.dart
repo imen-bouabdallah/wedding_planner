@@ -2,6 +2,7 @@
 import 'package:date_count_down/date_count_down.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wedding_planner/screens/shoppingList.dart';
 import 'package:wedding_planner/style/Theme.dart';
 import 'package:wedding_planner/screens/Settings.dart';
 import 'package:wedding_planner/screens/addGuest.dart';
@@ -18,7 +19,8 @@ void main() {
 Map<String, WidgetBuilder> routes = {
   "/": (context) => const MyHomePage(),
   "/addReminder": (context) => const AddReminder(),
-  "/addGuest" : (context)=> const AddGuest()
+  "/addGuest" : (context)=> const AddGuest(),
+
 };
 
 class MyApp extends ConsumerWidget {
@@ -90,7 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
             }
             else if (index==1){ //shopping list
-
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Shopping()),
+              );
             }
             else if (index==2){ //guests
               Navigator.push(

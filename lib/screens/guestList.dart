@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wedding_planner/classes/Functions.dart';
 import 'package:wedding_planner/classes/Guest.dart';
 import 'package:wedding_planner/style/Theme.dart';
 import 'package:wedding_planner/screens/addGuest.dart';
@@ -20,17 +21,17 @@ class _Guest_listState extends State<Guest_list> {
   List guest_list = [Guest("guest name is very long so that we can test what would happend if hjghjgjgjhgjhgjh"),
     Guest("geust 2"),
     Guest("guest name3"),
-    Guest.withInvite("guest name is very long so that we can test what would happend if hjghjgjgjhgjhgjh", '0555354', true),
+    Guest("guest name is very long so that we can test what would happend if hjghjgjgjhgjhgjh", '0555354'),
     Guest("geust 44"),
     Guest("guest name3"),
     Guest("guest name is very long so that we can test what would happend if hjghjgjgjhgjhgjh"),
-    Guest.withNumber("geust 47", '0555354'),
+    Guest("geust 47", '0555354'),
     Guest("guest name3"),
     Guest("guest name is  long"),
-    Guest.withNumber("geust 2", '0555354'),
+    Guest("geust 2", '0555354'),
     Guest("guest name3"),
     Guest("guest name hjghjgjgjhgjhgjh"),
-    Guest.withInvite("geust 2", '0555354', true),
+    Guest("geust 2", '0555354'),
     Guest("guest name3"),
   ];
 
@@ -43,67 +44,86 @@ class _Guest_listState extends State<Guest_list> {
         ),
         tileColor:  guest.isInvited ? green_ : Colors.transparent,
         subtitle: Text(guest.name),
-        trailing: guest.phoneNumber.isNotEmpty ? //if phone number is available
-            IconButton(
-              onPressed: () async {
-                final call = Uri.parse('tel:${guest.phoneNumber}');
-                if (await canLaunchUrl(call)) {
-                  launchUrl(call);
-                } else {
-                  throw 'Could not launch $call';
-                }
-              },
-              icon: const Icon(Icons.call),)
-                : // if phone number not available
-            IconButton(
-                onPressed: (){
-                  showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Add phone number'),
-                        content: SingleChildScrollView(
-                          child: ListBody(
-                            children: <Widget>[
-                              TextField(
-                                controller: _phoneNumberController,
-                                keyboardType: TextInputType.phone,
-      
-                                decoration:  InputDecoration(
-                                  labelText: 'Phone Number',
-                                  suffixIcon: IconButton(     // Icon to
-                                    icon: const Icon(Icons.clear), // clear text
-                                    onPressed: (){_phoneNumberController.clear();}),
-                                  ),
-                                ),
-      
-      
-                              ]
-                          ),
-                        ),
-                        actions: <Widget>[
-                          OutlinedButton(
-                            onPressed: () {
-                              setState(() {
-                                _phoneNumberController.clear();
-                              });
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Cancel'),
-                          ),
-                          FilledButton(
-                            onPressed: () {
-                              setState(() {
-                                guest_list[index].phoneNumber = _phoneNumberController.text.toString();
-                                _phoneNumberController.clear();
-                              });
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Save'),
-                          ),
-                        ],
-                      ));
-                },
-                icon: const Icon(Icons.add_call)),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            guest.phoneNumber!=null ? //if phone number is available
+                IconButton(
+                  onPressed: () async {
+                    final call = Uri.parse('tel:${guest.phoneNumber}');
+                    if (await canLaunchUrl(call)) {
+                      launchUrl(call);
+                    } else {
+                      throw 'Could not launch $call';
+                    }
+                  },
+                  icon: const Icon(Icons.call),)
+                    : // if phone number not available
+                IconButton(
+                    onPressed: (){
+                      showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Add phone number'),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+                                  TextField(
+                                    controller: _phoneNumberController,
+                                    keyboardType: TextInputType.phone,
+
+                                    decoration:  InputDecoration(
+                                      labelText: 'Phone Number',
+                                      suffixIcon: IconButton(     // Icon to
+                                        icon: const Icon(Icons.clear), // clear text
+                                        onPressed: (){_phoneNumberController.clear();}),
+                                      ),
+                                    ),
+
+
+                                  ]
+                              ),
+                            ),
+                            actions: <Widget>[
+                              OutlinedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _phoneNumberController.clear();
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              FilledButton(
+                                onPressed: () {
+                                  setState(() {
+                                    guest_list[index].phoneNumber = _phoneNumberController.text.toString();
+                                    _phoneNumberController.clear();
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Save'),
+                              ),
+                            ],
+                          ));
+                    },
+                    icon: const Icon(Icons.add_call)),
+            PopupMenuButton(
+              itemBuilder: (context)=> <PopupMenuEntry>[
+                PopupMenuItem(
+                    child: TextButton(
+                        onPressed: (){
+
+                        },
+                        child: const Text('Edit'))),
+                PopupMenuItem(
+                    child: TextButton(
+                        onPressed: (){confirmDelete(context);            },
+                        child: const Text('Delete'))),
+              ],
+            ),
+          ],
+        ),
       
       ),
     );
@@ -153,14 +173,12 @@ class _Guest_listState extends State<Guest_list> {
                  <PopupMenuEntry>[
                   PopupMenuItem(
                       child: TextButton(
-                          onPressed: (){
-
-                          },
-                          child: const Text('Edit'))),
+                          onPressed: (){},
+                          child: const Text('picute1'))),
                   PopupMenuItem(
                       child: TextButton(
                           onPressed: (){ },
-                          child: const Text('Delete'))),
+                          child: const Text('picture2'))),
                 ];
                   //_onShareXFileFromAssets(context, 'invite/invitation_fr.png');
                 },

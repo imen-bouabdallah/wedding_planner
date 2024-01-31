@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wedding_planner/classes/Functions.dart';
 import 'package:wedding_planner/classes/Reminder.dart';
 import 'package:wedding_planner/screens/addReminder.dart';
 
@@ -13,37 +14,6 @@ class _ReminderListState extends State<ReminderList> {
 
   final List<Reminder> _reminders = [Reminder('do something', DateTime(2024, 5, 20))];
 
-  Future _confirmDelete(){
-    return showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text('Delete'),
-          content: const SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text("Are you sure you want to delete this reminder?"),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FilledButton(
-              onPressed: () {
-                Navigator.pop(context); //to close dialog
-                Navigator.pop(context); //to close popup menu
-              },
-              child: const Text('No'),
-            ),
-            FilledButton(
-              onPressed: () {
-
-                Navigator.pop(context); //to close dialog
-                Navigator.pop(context); //to close menu
-              },
-              child: const Text('Yes'),
-            ),
-          ],
-        ));
-  }
 
   Widget _createReminder(Reminder reminder){
     return ListTile(
@@ -69,7 +39,7 @@ class _ReminderListState extends State<ReminderList> {
                       child: const Text('Edit'))),
               PopupMenuItem(
                   child: TextButton(
-                      onPressed: (){_confirmDelete();            },
+                      onPressed: (){confirmDelete(context);            },
                       child: const Text('Delete'))),
             ],
           ),
