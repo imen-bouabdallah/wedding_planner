@@ -31,3 +31,27 @@ Future confirmDelete(context){
         ],
       ));
 }
+
+
+Widget sideMenu(String route, argu){
+  return PopupMenuButton(
+    itemBuilder: (context)=> <PopupMenuEntry>[
+      PopupMenuItem(
+          child: TextButton(
+              onPressed: (){
+                Navigator.pop(context);//close the popup menu
+                Navigator.pushNamed(
+                    context,
+                    route,
+                    arguments: argu
+                );
+              },
+              child: const Text('Edit'))),
+      PopupMenuItem(
+          child: TextButton(
+              onPressed: (){confirmDelete(context);            },
+              child: const Text('Delete'))),
+    ],
+  );
+}
+

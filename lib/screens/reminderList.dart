@@ -12,37 +12,20 @@ class ReminderList extends StatefulWidget {
 
 class _ReminderListState extends State<ReminderList> {
 
-  final List<Reminder> _reminders = [Reminder('do something', DateTime(2024, 5, 20))];
+  final List<Reminder> _reminders = [Reminder('do something', DateTime(2024, 5, 20), DateTime(0,0,0,12,11))];
 
 
   Widget _createReminder(Reminder reminder){
     return ListTile(
 
       title: Text(reminder.title),
-      subtitle: Text("${reminder.date.day.toString()}/${reminder.date.month.toString()}/${reminder.date.year.toString()} at ${reminder.date.hour.toString()}:${reminder.date.minute.toString()}"),
+      subtitle: Text("${reminder.date.day.toString()}/${reminder.date.month.toString()}/${reminder.date.year.toString()} "
+          "at ${reminder.time?.hour.toString()}:${reminder.time?.minute.toString()}"),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(onPressed: (){}, icon: const Icon(Icons.notifications_active)),
-          PopupMenuButton(
-            itemBuilder: (context)=> <PopupMenuEntry>[
-              PopupMenuItem(
-                  child: TextButton(
-                      onPressed: (){
-                        Navigator.pop(context);//close the popup menu
-                        Navigator.pushNamed(
-                        context,
-                        '/addReminder',
-                          arguments: reminder
-                      );
-                      },
-                      child: const Text('Edit'))),
-              PopupMenuItem(
-                  child: TextButton(
-                      onPressed: (){confirmDelete(context);            },
-                      child: const Text('Delete'))),
-            ],
-          ),
+          sideMenu('/addReminder', reminder)
         ],
       )
 

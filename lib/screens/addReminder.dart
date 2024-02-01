@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:wedding_planner/classes/Reminder.dart';
 import 'package:wedding_planner/style/Theme.dart';
 
 
@@ -14,11 +15,13 @@ class _AddReminderState extends State<AddReminder> {
 
 
   final DateTime _today = DateTime.now();
-  bool _activeDate = false;
+  bool _activeDate = false, _validateTitle = false, _validateDate = false;
 
   final _dateControler = TextEditingController();
   final _timeControler = TextEditingController();
   final _titleControler = TextEditingController();
+
+  var reminder = null;
 
 
   Future<void> _selectDate(BuildContext context) async {
@@ -48,7 +51,10 @@ class _AddReminderState extends State<AddReminder> {
   }
 
   _save(){
-
+    setState(() {
+      _validateTitle = _titleControler.text.isEmpty;
+      _validateDate = _dateControler.text.isEmpty;
+    });
   }
 
 
@@ -60,21 +66,23 @@ class _AddReminderState extends State<AddReminder> {
         builder: (BuildContext context) {
           return AlertDialog(
             content: const Text('Save or discard changes?'),
+            actionsAlignment: MainAxisAlignment.start,
+            backgroundColor: gold,
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+
                 },
                 child: const Text('Cancel'),
               ),
-              const Divider(),
+              const VerticalDivider(),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
                 child: const Text('Discard'),
               ),
-              const Divider(),
+              const VerticalDivider(),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -100,10 +108,20 @@ class _AddReminderState extends State<AddReminder> {
 
   @override
   Widget build(BuildContext context) {
-    final data = ModalRoute.of(context)?.settings.arguments; //get the passed data
+
+    if(ModalRoute.of(context)!.settings.arguments!=null) //if it's an edit there is a passed data
+      reminder = ModalRoute.of(context)!.settings.arguments as Reminder; //get the passed data
+
+    if (reminder.toString().isNotEmpty && reminder != null){
+      _titleControler.text = reminder.title;
+      _dateControler.text = reminder.date.toString();
+      if (reminder.time !=null)
+        _timeControler.text = reminder.time.toString();
+
+    }
     return Scaffold(
       appBar: AppBar(
-        title: data.toString().isEmpty? const Text("Create reminder") : const Text("Edit reminder"),
+        title: reminder.toString().isEmpty? const Text("Create reminder") : const Text("Edit reminder"),
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: const Icon(Icons.close),
@@ -130,45 +148,41 @@ class _AddReminderState extends State<AddReminder> {
         child: Column(
           children: [
             const SizedBox(height: 10,),
-            TextFormField(
+            TextField(
               controller: _titleControler,
-              decoration: const InputDecoration(
+              decoration:  InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Enter reminder\'s title',
+                errorText: _validateTitle ? "Value Can't Be Empty" : null,
               ),
             ),
             const SizedBox(height: 10,),
             Row(
               children: [
                 Expanded(
-                  child: TextFormField(
+                  child: TextField(
                     controller: _dateControler,
-                    decoration: const InputDecoration(
+                    decoration:  InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Enter the date',
-                      fillColor: Colors.blue
+                      errorText: _validateDate ? "Value Can't Be Empty" : null,
                     ),
-                    validator: (value){
-                      if (value == null || value.isEmpty){
-                        return 'Please enter some text';
-                      }
-                      return null;
+
+                    onTap: (){
+                      _selectDate(context);
                     },
                   ),
                 ),
 
                 const SizedBox(width: 10,),
-                IconButton(onPressed: () {
-                  _selectDate(context);
-                },
-                    icon: const Icon(Icons.calendar_month))
+                const Icon(Icons.calendar_month)
               ],
             ),
             const SizedBox(height:10),
            Row(
               children: [
                 Expanded(
-                  child: TextFormField(
+                  child: TextField(
                     controller: _timeControler,
                     enabled: _activeDate,
                     decoration: const InputDecoration(

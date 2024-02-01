@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wedding_planner/classes/Guest.dart';
 
 class AddGuest extends StatefulWidget {
   const AddGuest({super.key});
@@ -13,6 +14,10 @@ class _AddGuestState extends State<AddGuest> {
   final _guestType = TextEditingController();
   final _menNumber = TextEditingController();
   final _womenNumber = TextEditingController();
+  var guest = null;
+
+  bool _validateName = false, _validateType = false;
+
 
   @override
   void dispose() {
@@ -25,9 +30,21 @@ class _AddGuestState extends State<AddGuest> {
   }
   @override
   Widget build(BuildContext context) {
+    if(ModalRoute.of(context)!.settings.arguments!=null)
+      guest = ModalRoute.of(context)!.settings.arguments as Guest; //get the passed data
+    if (guest.toString().isNotEmpty && guest != null){
+      _guestNameController.text = guest.name;
+      _guestType.text = guest.type;
+      _menNumber.text = guest.menNumber.toString();
+      _womenNumber.text = guest.womenNumber.toString();
+      if (guest.phoneNumber !=null)
+        _phoneNumberController.text = guest.phoneNumber!;
+    }
+
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Guest"),
+        title: guest.toString().isEmpty? const Text("Add Guest") : const Text("Edit Guest"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -38,19 +55,15 @@ class _AddGuestState extends State<AddGuest> {
             //mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 30,),
-              TextFormField(
-                controller: _guestNameController,
-                decoration: const InputDecoration(
+              TextField(
+
+                 controller: _guestNameController,
+                decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Guest Name',
-                    fillColor: Colors.blue
+                  errorText: _validateName ? "Value Can't Be Empty" : null,
                 ),
-                validator: (value){
-                  if (value == null || value.isEmpty){
-                    return 'Please enter the name';
-                  }
-                  return null;
-                },
+
               ),
               const SizedBox(height: 10,),
               TextField(
@@ -58,7 +71,7 @@ class _AddGuestState extends State<AddGuest> {
                 keyboardType: TextInputType.phone,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Phone Number',
+                  labelText: 'Phone Number (optional)',
                 ),
               ),
               const SizedBox(height: 10,),
@@ -99,14 +112,12 @@ class _AddGuestState extends State<AddGuest> {
                 children: [
                   DropdownMenu(
                     onSelected: (value){
-
-
                     },
                     label: const Text('Category'),
                     controller: _guestType,
-                    initialSelection: 'Family',
+                    initialSelection: _guestType,
                     requestFocusOnTap: false, //so that we have to choose from menu
-
+                    errorText: _validateType ? "Please select category" : null,
                     dropdownMenuEntries: const [
                       DropdownMenuEntry(value: 'Family', label: 'Family'),
                       DropdownMenuEntry(value: 'Friends', label: 'Friends'),
@@ -127,7 +138,17 @@ class _AddGuestState extends State<AddGuest> {
                       Navigator.of(context).pop();
                     }, child: const Text('Cancel')),
                     const SizedBox(width: 10,),
-                    FilledButton(onPressed: (){}, child: const Text('Save')),
+                    FilledButton(onPressed: (){
+                      setState(() {
+                        _validateName = _guestNameController.text.isEmpty;
+                        _validateType = _guestType.text.isEmpty;
+                      });
+
+                      if(!_validateName && !_validateType){
+                        print('save guest');
+                        //if mencount not empty add it
+                      }
+                    }, child: const Text('Save')),
                   ],
                 ),
               ),

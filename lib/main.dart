@@ -1,7 +1,7 @@
-
 import 'package:date_count_down/date_count_down.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:wedding_planner/screens/shoppingList.dart';
 import 'package:wedding_planner/style/Theme.dart';
 import 'package:wedding_planner/screens/Settings.dart';
@@ -34,10 +34,7 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
       title: 'Wedding planner',
       theme: getAppTheme(context, ref.watch(appThemeProvider)),
-      /* ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),*/
+
      // home: const MyHomePage(), //specified in route
       debugShowCheckedModeBanner: false,
       routes: routes,
@@ -47,9 +44,7 @@ class MyApp extends ConsumerWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key /*,required this.title*/});
-
-
+  const MyHomePage({super.key });
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -78,6 +73,84 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
 
+      body:  Column(
+
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          IgnorePointer(
+            child: Container(
+              margin: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(),
+                color: platinum
+              ),
+            
+              child: Column(
+                children: [
+                  TableCalendar(
+                    firstDay: DateTime.utc(weddingDate.year, weddingDate.month, 1),
+                    lastDay: DateTime.utc(weddingDate.year, weddingDate.month+1, 1),
+                    focusedDay: weddingDate,
+                    currentDay: weddingDate,
+                    pageAnimationEnabled: false,
+                    headerStyle: const HeaderStyle(
+                      formatButtonVisible: false,
+                      leftChevronVisible: false,
+                      rightChevronVisible: false
+                    ),
+                    calendarStyle: CalendarStyle(
+                      todayDecoration: BoxDecoration(
+                        color: gold,
+                        shape: BoxShape.circle
+                      )
+                    ),
+                  ),
+            
+                  /*Image.asset('assets/invite/invitation_fr.png',
+                  fit: BoxFit.cover,
+                    width: double.infinity,
+                  ),*/
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius: BorderRadius.circular(10),
+                      color: goldAccent
+                    ),
+                    padding: EdgeInsets.all(3),
+                    child: CountDownText(
+                      due: weddingDate,
+                      finishedText: "Done",
+                      showLabel: true,
+                      longDateName: true,
+                      daysTextLong: " DAYS ",
+                      hoursTextLong: " HOURS ",
+                      minutesTextLong: " MINUTES ",
+                      secondsTextLong: " SECONDS ",
+                      style: const TextStyle(
+                          color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold
+                      ),
+
+                    ),
+                  ),
+                  const SizedBox(height: 4,)
+            
+                ],
+              ),
+            
+            ),
+          ),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("XX Guests not invited Yet"),
+            ],
+          ),
+
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {
@@ -87,7 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
             if (index==0){ //reminders
               Navigator.push(
                 context,
-                  MaterialPageRoute(builder: (context) => const ReminderList()),
+                MaterialPageRoute(builder: (context) => const ReminderList()),
               );
 
             }
@@ -139,59 +212,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
         ],
 
-      ),
-      body:  Column(
-
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Container(
-            margin: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(),
-            ),
-            height: 350,
-            child: Stack(
-              children: [
-                Image.asset('assets/invite/invitation_fr.png',
-                fit: BoxFit.cover,
-                  width: double.infinity,
-                ),
-                Positioned(
-                  bottom: 50,
-                    left: 20,
-                    right: 0,
-                    top: 270,
-                    child:
-                    CountDownText(
-                      due: weddingDate,
-                      finishedText: "Done",
-                      showLabel: true,
-                      longDateName: true,
-                      daysTextLong: " DAYS ",
-                      hoursTextLong: " HOURS ",
-                      minutesTextLong: " MINUTES ",
-                      secondsTextLong: " SECONDS ",
-                      style: TextStyle(color: Colors.black),
-
-                    )
-                      /*Text('${countdown()[0]}days : ${countdown()[1]} hours : ${countdown()[2]} minutes\n ',
-                         style:TextStyle(
-                           fontSize: 24,
-                          // backgroundColor: Colors.black,
-                           background: Paint()..color=Colors.black,
-                           color: Colors.white
-                    ) ,
-                      strutStyle: const StrutStyle(height: 2,forceStrutHeight: true),)*/
-                ),
-
-              ],
-            ),
-
-          ),
-          const Expanded( child: Text("XX Guests not invited Yet")),
-
-        ],
       ),
 
     );

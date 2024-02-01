@@ -18,22 +18,24 @@ class _Guest_listState extends State<Guest_list> {
   @override
   final _phoneNumberController = TextEditingController();
 
-  List guest_list = [Guest("guest name is very long so that we can test what would happend if hjghjgjgjhgjhgjh"),
-    Guest("geust 2"),
-    Guest("guest name3"),
-    Guest("guest name is very long so that we can test what would happend if hjghjgjgjhgjhgjh", '0555354'),
-    Guest("geust 44"),
-    Guest("guest name3"),
-    Guest("guest name is very long so that we can test what would happend if hjghjgjgjhgjhgjh"),
-    Guest("geust 47", '0555354'),
-    Guest("guest name3"),
-    Guest("guest name is  long"),
-    Guest("geust 2", '0555354'),
-    Guest("guest name3"),
-    Guest("guest name hjghjgjgjhgjhgjh"),
-    Guest("geust 2", '0555354'),
-    Guest("guest name3"),
+  List guest_list = [Guest("guest name is very long so that we can test what would happend if hjghjgjgjhgjhgjh", 'Family'),
+    Guest("geust 2", 'Family'),
+    Guest("guest name3", 'Friends'),
+    Guest("guest name is very long so that we can test what would happend if hjghjgjgjhgjhgjh", 'Family','0555354'),
+    Guest("geust 44", 'Family'),
+    Guest("guest name3", 'Family'),
+    Guest("guest name is very long so that we can test what would happend if hjghjgjgjhgjhgjh", 'Family'),
+    Guest("geust 47", 'Family','0555354'),
+    Guest("guest name3", 'Family'),
+    Guest("guest name is  long", 'Family'),
+    Guest("geust 2", 'Family','0555354'),
+    Guest("guest name3", 'Family'),
+    Guest("guest name hjghjgjgjhgjhgjh", 'Family'),
+    Guest("geust 2",'Family', '0555354'),
+    Guest("guest name3", 'Family'),
   ];
+
+
 
   Widget _buildGuest(Guest guest, int index){
     return Material(
@@ -43,10 +45,13 @@ class _Guest_listState extends State<Guest_list> {
           borderRadius: BorderRadius.circular(5),
         ),
         tileColor:  guest.isInvited ? green_ : Colors.transparent,
-        subtitle: Text(guest.name),
+        title: Text(guest.name),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+            ///if the guest is invited we display 'invited' otherwise a phone icon to call them
+            ///if phone number is availble otherwise option to add phone number
+            guest.isInvited ? const Text("Invited", style: TextStyle(fontStyle: FontStyle.italic),) :
             guest.phoneNumber!=null ? //if phone number is available
                 IconButton(
                   onPressed: () async {
@@ -109,23 +114,72 @@ class _Guest_listState extends State<Guest_list> {
                     },
                     icon: const Icon(Icons.add_call)),
             PopupMenuButton(
-              itemBuilder: (context)=> <PopupMenuEntry>[
+              itemBuilder: (context) =>
+              <PopupMenuEntry>[
                 PopupMenuItem(
                     child: TextButton(
-                        onPressed: (){
-
+                        onPressed: () {
+                          Navigator.pop(context);
+                          setState(() {
+                            guest.isInvited = !guest.isInvited;
+                          });
+                        },
+                        child: guest.isInvited ? const Text('Mark as non-invited') : const Text('Mark as invited'))),
+                PopupMenuItem(
+                    child: TextButton(
+                        onPressed: () {
+                          Navigator.pop(context); //close the popup menu
+                          Navigator.pushNamed(
+                              context,
+                              '/addGuest',
+                              arguments: guest
+                          );
                         },
                         child: const Text('Edit'))),
                 PopupMenuItem(
                     child: TextButton(
-                        onPressed: (){confirmDelete(context);            },
+                        onPressed: () {
+                          confirmDelete(context);
+                        },
                         child: const Text('Delete'))),
               ],
             ),
           ],
         ),
-      
+
       ),
+    );
+  }
+
+  Widget _sideMenu(String route, argu) {
+    return PopupMenuButton(
+      itemBuilder: (context) =>
+      <PopupMenuEntry>[
+        PopupMenuItem(
+            child: TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  argu.isInvited = true;
+                },
+                child: const Text('Mark as invited'))),
+        PopupMenuItem(
+            child: TextButton(
+                onPressed: () {
+                  Navigator.pop(context); //close the popup menu
+                  Navigator.pushNamed(
+                      context,
+                      route,
+                      arguments: argu
+                  );
+                },
+                child: const Text('Edit'))),
+        PopupMenuItem(
+            child: TextButton(
+                onPressed: () {
+                  confirmDelete(context);
+                },
+                child: const Text('Delete'))),
+      ],
     );
   }
 
@@ -142,6 +196,7 @@ class _Guest_listState extends State<Guest_list> {
 
   @override
   Widget build(BuildContext context) {
+    guest_list[2].isInvited = true;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Guest list'),
@@ -165,34 +220,31 @@ class _Guest_listState extends State<Guest_list> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TextButton(
-
-              style: ButtonStyle(foregroundColor: MaterialStateProperty.all(gold),),
-              onPressed: (){
+               Text('Send an invitation', style: TextStyle(color: gold),),
+              const SizedBox(width: 4,),
+              PopupMenuButton(
+                icon: const Icon(Icons.email),
+                  iconColor: gold,
                   //choose picture
-                 <PopupMenuEntry>[
-                  PopupMenuItem(
-                      child: TextButton(
-                          onPressed: (){},
-                          child: const Text('picute1'))),
-                  PopupMenuItem(
-                      child: TextButton(
-                          onPressed: (){ },
-                          child: const Text('picture2'))),
-                ];
-                  //_onShareXFileFromAssets(context, 'invite/invitation_fr.png');
-                },
-                child : const Row(
-                  children: [
-                    Text('Send an invitation'),
-                    SizedBox(width: 4,),
-                    Icon( Icons.email),
+                  itemBuilder: (context)=> <PopupMenuEntry>[
+
+                    PopupMenuItem(
+                        child: TextButton(
+                            onPressed: (){Navigator.pop(context); _onShareXFileFromAssets(context, 'invite/invitation_ar.png');},
+                            child: const Text('Arabic Invitation'))),
+                    PopupMenuItem(
+                        child: TextButton(
+                            onPressed: (){Navigator.pop(context); _onShareXFileFromAssets(context, 'invite/invitation_fr.png');},
+                            child: const Text('French invitation'))),
                   ],
-                ),
-                ),
-              const SizedBox(width: 20,)
-            ],
+
+
+              ),
+            ]
           ),
+
+          const SizedBox(width: 20,),
+
           Expanded(
             flex: 1,
             child: ListView.separated(

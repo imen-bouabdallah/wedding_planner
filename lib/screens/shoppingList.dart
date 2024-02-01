@@ -28,8 +28,8 @@ class _ShoppingState extends State<Shopping> {
       title: Text(item.name, style: const TextStyle(fontSize: 20),),
       subtitle: Row(
         children: [
-          SizedBox(width: 30,),
-          Text('Price : '),
+          const SizedBox(width: 30,),
+          const Text('Price : '),
           (item.price!=null) ? Text(item.price.toString()) : const SizedBox(),
         ],
       ),
@@ -53,26 +53,28 @@ class _ShoppingState extends State<Shopping> {
 
   _calculateSpending(){
     _spending=0;
-    shopList.forEach((element) {
+    for (var element in shopList) {
       int a;
-      if (element.bought && element.price!=null)
+      if (element.bought && element.price!=null) {
         a = element.price;
-      else
+      } else {
         a = 0;
+      }
 
-      _spending +=a;});
+      _spending +=a;}
 
   }
   _calculateTotal(){
     setState(() {
-      shopList.forEach((element) {
+      for (var element in shopList) {
         int a;
-        if (element.price!=null)
+        if (element.price!=null) {
           a = element.price;
-        else
+        } else {
           a = 0;
+        }
 
-        _total += a;});
+        _total += a;}
     });
   }
 
@@ -100,27 +102,42 @@ class _ShoppingState extends State<Shopping> {
                   return _shopItem(shopList[index], index);
                   })),
           const SizedBox(height: 10,),
-          Container(
-            color: Colors.green,
-
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(width: 2),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                padding: EdgeInsets.all(15),
+                child: Column(
                   children: [
-                    const Text('Spent'),
-                    Text(_spending.toString()),
+                     Text('Spent \n $_spending',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+
                   ],
                 ),
-                const Divider(thickness: 5,height: 55, color: Colors.black,),
-                Column(
+              ),
+              const VerticalDivider(thickness: 5, color: Colors.black,),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(width: 2),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                padding: EdgeInsets.all(15),
+                child: Column(
                   children: [
-                    const Text('Total'),
-                    Text(_total.toString()),
+                    Text('Total \n $_total',
+                      textAlign: TextAlign.center,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+
                   ],
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
           const SizedBox(height: 100,),
         ],

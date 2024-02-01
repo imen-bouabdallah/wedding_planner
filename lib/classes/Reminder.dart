@@ -4,7 +4,7 @@ class Reminder {
   DateTime? _time;
 
 
-  Reminder(this._title, this._date, [_time]);
+  Reminder(this._title, this._date, [this._time]);
 
   String get title => _title;
 
