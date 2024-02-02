@@ -11,7 +11,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin{
   @override
   void initState() {
     super.initState();
@@ -41,8 +42,13 @@ class _SplashScreenState extends State<SplashScreen> {
             end: Alignment.bottomLeft
           ),
         ),
-        child: Center(
-          child: Text("Nesma\nMoad\nHiba"),
+        child: const Center(
+          child: Column(
+            children: [
+              Image(image: AssetImage("assets/icon/icon.png")),
+              Text("Wedding Planer", style: TextStyle(fontWeight: FontWeight.bold),),
+            ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:date_count_down/date_count_down.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wedding_planner/screens/Settings.dart';
 import 'package:wedding_planner/screens/guestList.dart';
@@ -20,6 +21,17 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime date =  DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour);
   DateTime weddingDate = DateTime.utc(2024, DateTime.july, 6, 0);
   int CurrentButton= 0; //for bottom navigation bar -- current selected button
+
+
+  @override
+  void initState() {
+    super.initState();
+    initialization();
+  }
+
+  void initialization() async {
+    FlutterNativeSplash.remove();
+  }
 
   @override
   Widget build(BuildContext context) {
