@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wedding_planner/screens/addGuest.dart';
 import 'package:wedding_planner/screens/addReminder.dart';
 import 'package:wedding_planner/screens/homeScreen.dart';
-import 'package:wedding_planner/screens/splash_screen.dart';
+import 'package:wedding_planner/screens/login.dart';
 import 'package:wedding_planner/style/Theme.dart';
 
 void main() {
@@ -15,7 +15,7 @@ Map<String, WidgetBuilder> routes = {
   "/": (context) => const HomeScreen(),
   "/addReminder": (context) => const AddReminder(),
   "/addGuest" : (context)=> const AddGuest(),
- // "/splash" : (context)=> const SplashScreen(),
+  "/login" : (context)=> const Login(),
 };
 
 class MyApp extends ConsumerWidget {
@@ -29,7 +29,7 @@ class MyApp extends ConsumerWidget {
       theme: getAppTheme(context, ref.watch(appThemeProvider)),
       debugShowCheckedModeBanner: false,
       routes: routes,
-      initialRoute: "/",
+      initialRoute: "/login",
     );
   }
 }

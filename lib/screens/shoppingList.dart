@@ -13,7 +13,12 @@ class Shopping extends StatefulWidget {
 class _ShoppingState extends State<Shopping> {
   List shopList = [ShopItem("batata"), ShopItem("bsal", 500)];
 
+  final _itemController = TextEditingController();
+  final _priceController = TextEditingController();
+
   int _spending=0, _total=0;
+
+  bool _validateItem = false;
 
   Widget _shopItem(ShopItem item, int index){
     return ListTile(
@@ -29,8 +34,7 @@ class _ShoppingState extends State<Shopping> {
       subtitle: Row(
         children: [
           const SizedBox(width: 30,),
-          const Text('Price : '),
-          (item.price!=null) ? Text(item.price.toString()) : const SizedBox(),
+          (item.price!=null) ? Text('Price : ${item.price.toString()}') : const SizedBox(),
         ],
       ),
       trailing: PopupMenuButton(
@@ -48,6 +52,75 @@ class _ShoppingState extends State<Shopping> {
                   child: const Text('Delete'))),
         ],
       ),
+    );
+  }
+
+  Future<void> _createItem() async {
+    return showDialog<void>(
+      context: context,
+      //T: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState)
+        {
+          return AlertDialog(
+            title: const Text('Add a todo'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _itemController,
+                  decoration: InputDecoration(
+                    hintText: 'Purchased item',
+                    errorText: _validateItem ? "Value Can't Be Empty" : null,),
+                  autofocus: true,
+                ),
+                TextField(
+                  controller: _priceController,
+                  decoration: InputDecoration(hintText: 'Price'),
+                  keyboardType: TextInputType.number,
+                )
+              ],
+            ),
+            actions: <Widget>[
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () {
+                  _priceController.clear();
+                  _itemController.clear();
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                child: const Text('Add'),
+                onPressed: () {
+                  setState(() {
+                    _validateItem = _itemController.text.isEmpty;
+                  });
+                  if (!_validateItem) {
+                    if (_priceController.text.isNotEmpty) {
+                      shopList.add(ShopItem(_itemController.text,
+                          int.parse(_priceController.text)));
+                    } else {
+                      shopList.add(ShopItem(_itemController.text));
+                    }
+                    _priceController.clear();
+                    _itemController.clear();
+                    _calculateTotal();
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
+            ],
+          );
+        }
+        );
+      },
     );
   }
 
@@ -111,7 +184,7 @@ class _ShoppingState extends State<Shopping> {
                   border: Border.all(width: 2),
                   borderRadius: BorderRadius.circular(5),
                 ),
-                padding: EdgeInsets.all(15),
+                padding: const EdgeInsets.all(15),
                 child: Column(
                   children: [
                      Text('Spent \n $_spending',
@@ -127,7 +200,7 @@ class _ShoppingState extends State<Shopping> {
                   border: Border.all(width: 2),
                   borderRadius: BorderRadius.circular(5),
                 ),
-                padding: EdgeInsets.all(15),
+                padding: const EdgeInsets.all(15),
                 child: Column(
                   children: [
                     Text('Total \n $_total',
@@ -143,7 +216,7 @@ class _ShoppingState extends State<Shopping> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: (){_createItem();},
         child:  const Icon(Icons.add),
       ),
     );

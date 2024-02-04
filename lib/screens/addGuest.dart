@@ -14,7 +14,7 @@ class _AddGuestState extends State<AddGuest> {
   final _guestType = TextEditingController();
   final _menNumber = TextEditingController();
   final _womenNumber = TextEditingController();
-  var guest = null;
+  var guest;
 
   bool _validateName = false, _validateType = false;
 
@@ -30,15 +30,17 @@ class _AddGuestState extends State<AddGuest> {
   }
   @override
   Widget build(BuildContext context) {
-    if(ModalRoute.of(context)!.settings.arguments!=null)
+    if(ModalRoute.of(context)!.settings.arguments!=null) {
       guest = ModalRoute.of(context)!.settings.arguments as Guest; //get the passed data
+    }
     if (guest.toString().isNotEmpty && guest != null){
       _guestNameController.text = guest.name;
       _guestType.text = guest.type;
       _menNumber.text = guest.menNumber.toString();
       _womenNumber.text = guest.womenNumber.toString();
-      if (guest.phoneNumber !=null)
+      if (guest.phoneNumber !=null) {
         _phoneNumberController.text = guest.phoneNumber!;
+      }
     }
 
 
@@ -59,7 +61,7 @@ class _AddGuestState extends State<AddGuest> {
 
                  controller: _guestNameController,
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     labelText: 'Guest Name',
                   errorText: _validateName ? "Value Can't Be Empty" : null,
                 ),

@@ -150,6 +150,7 @@ ThemeData getAppTheme(BuildContext context, bool isDarkTheme) {
       menuStyle: MenuStyle(
         backgroundColor: MaterialStateProperty.all(floral)
       )
-    )
+    ),
+
   );
 }

@@ -21,7 +21,7 @@ class _AddReminderState extends State<AddReminder> {
   final _timeControler = TextEditingController();
   final _titleControler = TextEditingController();
 
-  var reminder = null;
+  var reminder;
 
 
   Future<void> _selectDate(BuildContext context) async {
@@ -109,14 +109,17 @@ class _AddReminderState extends State<AddReminder> {
   @override
   Widget build(BuildContext context) {
 
-    if(ModalRoute.of(context)!.settings.arguments!=null) //if it's an edit there is a passed data
+    if(ModalRoute.of(context)!.settings.arguments!=null) {
+      //if it's an edit there is a passed data
       reminder = ModalRoute.of(context)!.settings.arguments as Reminder; //get the passed data
+    }
 
     if (reminder.toString().isNotEmpty && reminder != null){
       _titleControler.text = reminder.title;
       _dateControler.text = reminder.date.toString();
-      if (reminder.time !=null)
+      if (reminder.time !=null) {
         _timeControler.text = reminder.time.toString();
+      }
 
     }
     return Scaffold(
@@ -151,7 +154,7 @@ class _AddReminderState extends State<AddReminder> {
             TextField(
               controller: _titleControler,
               decoration:  InputDecoration(
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 labelText: 'Enter reminder\'s title',
                 errorText: _validateTitle ? "Value Can't Be Empty" : null,
               ),
@@ -163,7 +166,7 @@ class _AddReminderState extends State<AddReminder> {
                   child: TextField(
                     controller: _dateControler,
                     decoration:  InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                       labelText: 'Enter the date',
                       errorText: _validateDate ? "Value Can't Be Empty" : null,
                     ),

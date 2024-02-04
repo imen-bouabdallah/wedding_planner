@@ -39,11 +39,14 @@ class _ReminderListState extends State<ReminderList> {
       appBar: AppBar(
         title: const Text("Reminders"),
       ),
-      body: ListView.builder(
-        itemCount: _reminders.length,
-         itemBuilder: (context, item){
-           return _createReminder(_reminders[item]);
-         }
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
+        child: ListView.builder(
+          itemCount: _reminders.length,
+           itemBuilder: (context, item){
+             return _createReminder(_reminders[item]);
+           }
+        ),
       ),
 
       floatingActionButton: FloatingActionButton(

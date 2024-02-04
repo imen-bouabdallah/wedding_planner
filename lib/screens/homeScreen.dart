@@ -1,5 +1,4 @@
 import 'package:date_count_down/date_count_down.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -93,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.circular(10),
                         color: goldAccent
                     ),
-                    padding: EdgeInsets.all(3),
+                    padding: const EdgeInsets.all(3),
                     child: CountDownText(
                       due: weddingDate,
                       finishedText: "Done",

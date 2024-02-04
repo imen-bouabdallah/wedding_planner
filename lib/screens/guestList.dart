@@ -8,7 +8,7 @@ import 'package:wedding_planner/style/Theme.dart';
 import 'package:wedding_planner/screens/addGuest.dart';
 
 class Guest_list extends StatefulWidget {
-  const Guest_list({Key? key}) : super(key: key);
+  const Guest_list({super.key});
 
   @override
   State<Guest_list> createState() => _Guest_listState();
