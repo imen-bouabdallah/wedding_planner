@@ -220,11 +220,18 @@ class _Guest_listState extends State<Guest_list> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-               Text('Send an invitation', style: TextStyle(color: gold),),
-              const SizedBox(width: 4,),
+
               PopupMenuButton(
-                icon: const Icon(Icons.email),
-                  iconColor: gold,
+                //icon: const Icon(Icons.email),
+                  child: Row(
+                    children: [
+                      Text('Send an invitation', style: TextStyle(color: gold),),
+                      const SizedBox(width: 4,),
+                      Icon(Icons.email, color: gold,),
+                      const SizedBox(width: 10,),
+                    ],
+                  ),
+
                   //choose picture
                   itemBuilder: (context)=> <PopupMenuEntry>[
 
@@ -237,7 +244,6 @@ class _Guest_listState extends State<Guest_list> {
                             onPressed: (){Navigator.pop(context); _onShareXFileFromAssets(context, 'invite/invitation_fr.png');},
                             child: const Text('French invitation'))),
                   ],
-
 
               ),
             ]

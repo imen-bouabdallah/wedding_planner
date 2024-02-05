@@ -77,7 +77,7 @@ class _ShoppingState extends State<Shopping> {
                 ),
                 TextField(
                   controller: _priceController,
-                  decoration: InputDecoration(hintText: 'Price'),
+                  decoration: const InputDecoration(hintText: 'Price'),
                   keyboardType: TextInputType.number,
                 )
               ],

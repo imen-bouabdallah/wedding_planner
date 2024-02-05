@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:wedding_planner/style/Theme.dart';
 
@@ -83,7 +84,17 @@ class _SettingsState extends State<Settings> {
           ),
 
           const Divider(),
-
+          TextButton(
+              onPressed: (){FirebaseAuth.instance.signOut();},
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("Logout ",),
+                  Icon(Icons.logout,),
+                ],
+              )
+          ),
         ],
       ),
     );

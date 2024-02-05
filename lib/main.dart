@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wedding_planner/screens/addGuest.dart';
@@ -6,8 +7,14 @@ import 'package:wedding_planner/screens/homeScreen.dart';
 import 'package:wedding_planner/screens/login.dart';
 import 'package:wedding_planner/style/Theme.dart';
 
-void main() {
-  runApp(const ProviderScope(child:  MyApp())); //to be able to change theme
+Future main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+      await Firebase.initializeApp();
+      runApp(const ProviderScope(child:  MyApp())); //to be able to change theme
+    } catch (e) {
+      print('error initializing firebase app $e');
+  }
 }
 
 //to be able to use pushNamed

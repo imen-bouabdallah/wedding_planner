@@ -48,83 +48,85 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
 
-      body:  Column(
+      body:  SingleChildScrollView(
+        child: Column(
 
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          IgnorePointer(
-            child: Container(
-              margin: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  border: Border.all(),
-                  color: platinum
-              ),
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            IgnorePointer(
+              child: Container(
+                margin: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(),
+                    color: platinum
+                ),
 
-              child: Column(
-                children: [
-                  TableCalendar(
-                    firstDay: DateTime.utc(weddingDate.year, weddingDate.month, 1),
-                    lastDay: DateTime.utc(weddingDate.year, weddingDate.month+1, 1),
-                    focusedDay: weddingDate,
-                    currentDay: weddingDate,
-                    pageAnimationEnabled: false,
-                    headerStyle: const HeaderStyle(
-                        formatButtonVisible: false,
-                        leftChevronVisible: false,
-                        rightChevronVisible: false
-                    ),
-                    calendarStyle: CalendarStyle(
-                        todayDecoration: BoxDecoration(
-                            color: gold,
-                            shape: BoxShape.circle
-                        )
-                    ),
-                  ),
-
-                  /*Image.asset('assets/invite/invitation_fr.png',
-                  fit: BoxFit.cover,
-                    width: double.infinity,
-                  ),*/
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(10),
-                        color: goldAccent
-                    ),
-                    padding: const EdgeInsets.all(3),
-                    child: CountDownText(
-                      due: weddingDate,
-                      finishedText: "Done",
-                      showLabel: true,
-                      longDateName: true,
-                      daysTextLong: " DAYS ",
-                      hoursTextLong: " HOURS ",
-                      minutesTextLong: " MINUTES ",
-                      secondsTextLong: " SECONDS ",
-                      style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold
+                child: Column(
+                  children: [
+                    TableCalendar(
+                      firstDay: DateTime.utc(weddingDate.year, weddingDate.month, 1),
+                      lastDay: DateTime.utc(weddingDate.year, weddingDate.month+1, 1),
+                      focusedDay: weddingDate,
+                      currentDay: weddingDate,
+                      pageAnimationEnabled: false,
+                      headerStyle: const HeaderStyle(
+                          formatButtonVisible: false,
+                          leftChevronVisible: false,
+                          rightChevronVisible: false
                       ),
-
+                      calendarStyle: CalendarStyle(
+                          todayDecoration: BoxDecoration(
+                              color: gold,
+                              shape: BoxShape.circle
+                          )
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4,)
 
-                ],
+                    /*Image.asset('assets/invite/invitation_fr.png',
+                    fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),*/
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(),
+                          borderRadius: BorderRadius.circular(10),
+                          color: goldAccent
+                      ),
+                      padding: const EdgeInsets.all(3),
+                      child: CountDownText(
+                        due: weddingDate,
+                        finishedText: "Done",
+                        showLabel: true,
+                        longDateName: true,
+                        daysTextLong: " DAYS ",
+                        hoursTextLong: " HOURS ",
+                        minutesTextLong: " MINUTES ",
+                        secondsTextLong: " SECONDS ",
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold
+                        ),
+
+                      ),
+                    ),
+                    const SizedBox(height: 4,)
+
+                  ],
+                ),
+
               ),
-
             ),
-          ),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("XX Guests not invited Yet"),
-            ],
-          ),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("XX Guests not invited Yet"),
+              ],
+            ),
 
-        ],
+          ],
+        ),
       ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {

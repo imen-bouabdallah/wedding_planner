@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:wedding_planner/screens/homeScreen.dart';
 
 Future confirmDelete(context){
   return showDialog<String>(
@@ -55,3 +57,13 @@ Widget sideMenu(String route, argu){
   );
 }
 
+///SignIn methods
+Future SignIn(String email, String password, context) async{ //with email
+  await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (
+        context) => const HomeScreen()),
+  );
+}
