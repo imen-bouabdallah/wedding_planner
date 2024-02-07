@@ -93,7 +93,6 @@ class _Todo_listState extends State<Todo_list> {
           _appBar = _selectBar;
         });
       },
-      tileColor: _isSelected[i] ? Colors.blue : null,
       leading: Checkbox(
         value: item.done,
         onChanged: (bool? value) {
@@ -187,26 +186,6 @@ class _Todo_listState extends State<Todo_list> {
                       !item.private ? Icons.lock_open_rounded : Icons.lock)),
             ],
           ),
-
-          ///TODO if inserted create a space for due date
-          /*const Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding:  EdgeInsets.only(
-                bottom: 10,
-                top: 10,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'due date + time',
-
-                  ),
-                ],
-              ),
-            ),
-          ),*/
         ],
       ),
     );

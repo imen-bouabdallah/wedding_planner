@@ -4,6 +4,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wedding_planner/classes/Functions.dart';
 import 'package:wedding_planner/classes/Guest.dart';
+import 'package:wedding_planner/screens/detailedGuestList.dart';
 import 'package:wedding_planner/style/Theme.dart';
 import 'package:wedding_planner/screens/addGuest.dart';
 
@@ -208,9 +209,14 @@ class _Guest_listState extends State<Guest_list> {
               onPressed: (){},
               icon: const Icon(Icons.search)),
           IconButton(
-              onPressed: (){},
+              onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context)=> const DetailedList()),
+                );
+              },
 
-              icon: const Icon(Icons.more_vert) ),
+              icon: const Icon(Icons.info_outline) ),
         ],
       ),
 

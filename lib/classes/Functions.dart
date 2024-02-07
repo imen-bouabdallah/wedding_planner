@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:wedding_planner/screens/homeScreen.dart';
 
 Future confirmDelete(context){
@@ -59,11 +61,26 @@ Widget sideMenu(String route, argu){
 
 ///SignIn methods
 Future SignIn(String email, String password, context) async{ //with email
-  await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+  bool result = await InternetConnection().hasInternetAccess; //check internet connection
+  
+  if(result) {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email, password: password);
 
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (
-        context) => const HomeScreen()),
-  );
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    );
+  }
+  else{
+    Fluttertoast.showToast(msg: "No internet connection!");
+  }
+}
+
+Future signInWithNumber() async {
+  bool result = await InternetConnection().hasInternetAccess; //check internet connection
+
+  /*await FirebaseAuth.instance.signInWithPhoneNumber(
+
+      );*/
 }
