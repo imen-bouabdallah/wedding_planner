@@ -39,66 +39,84 @@ class DetailedList extends StatelessWidget {
     mperson.womenNumber = 55;
     return Scaffold(
       appBar: AppBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(5, 20, 5, 5),
-          child: Column(
-            children: [
-              Table(border: TableBorder.all(width: 2), children: const [
-                 TableRow(
-                    children: [
-                      Align(alignment: Alignment.centerRight,child: Text("total  ")),
-                      Center(child: Text("55")),
-                      Center(child: Text("77")),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(5, 20, 5, 5),
+        child: Column(
+          children: [
+            Table(border: TableBorder.all(width: 2, color: Colors.brown),
+             columnWidths: const <int, TableColumnWidth>{
+               0: FlexColumnWidth(45),
+               1: FlexColumnWidth(27),
+               2: FlexColumnWidth(28)
+             },
+             children:  [
+               TableRow(
+                  children: [
+                    Align(alignment: Alignment.centerRight,child: Text("Total  ", style:
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: gold),
+                    )),
+                    const Center(child: Text("55", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,),
+                    )),
+                    const Center(child: Text("77", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,),
+                    )),
+                  ]),
+            ]),
+            const SizedBox(height: 10,),
+            Expanded(
+              flex: 1,
+              child: SingleChildScrollView(
+                child: Table(
+                  border: TableBorder.all(width: 2, color: Colors.brown),
+                  columnWidths: const <int, TableColumnWidth>{
+                    0: FlexColumnWidth(45),
+                    1: FlexColumnWidth(27),
+                    2: FlexColumnWidth(28)
+                  },
+                  children: [
+                   TableRow(
+                        children: [
+                      Container(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Text(
+                          "Guest Name",
+                          style:
+                              TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: gold),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Text(
+                          "Men N°",
+                          style:
+                              TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: gold),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(left: 5),
+                        child:  Text(
+                          "Women N°",
+                          style:
+                              TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: gold),
+                        ),
+                      ),
                     ]),
-              ]),
-              const SizedBox(height: 10,),
-              Table(
-                border: TableBorder.all(width: 2, color: Colors.brown),
-                children: [
-                 TableRow(
-                      children: [
-                    Container(
-                      padding: const EdgeInsets.only(left: 5),
-                      child: Text(
-                        "Guest Name",
-                        style:
-                            TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: gold),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(left: 5),
-                      child: Text(
-                        "Men N°",
-                        style:
-                            TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: gold),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(left: 5),
-                      child:  Text(
-                        "Women N°",
-                        style:
-                            TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: gold),
-                      ),
-                    ),
-                  ]),
-
-                  const TableRow(children: [
-                    Text("Guest"),
-                    Text("5"),
-                    Text("6"),
-                  ]),
-                  const TableRow(children: [
-                    Text("someone"),
-                    Text("9"),
-                    Text("6"),
-                  ]),
-                  _buildGuestDetails(mperson),
-                ],
+                            
+                    const TableRow(children: [
+                      Text("Guest"),
+                      Text("5"),
+                      Text("6"),
+                    ]),
+                    const TableRow(children: [
+                      Text("someone"),
+                      Text("9"),
+                      Text("6"),
+                    ]),
+                    _buildGuestDetails(mperson),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

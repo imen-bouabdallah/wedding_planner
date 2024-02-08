@@ -3,15 +3,15 @@ class Guest{
   String? _phoneNumber= '';
   bool _isInvited = false;
   String _type;
-  int _menNumber = 1;
-  int _womenNumber = 0;
+  int _menNumber ;
+  int _womenNumber ;
 
-  Guest(this._name, this._type, [this._phoneNumber]);
+  Guest([this._name ="", this._type ='', this._phoneNumber, this._womenNumber = 0, this._menNumber = 1]);
 
 
-  int? get menNumber => _menNumber;
+  int get menNumber => _menNumber;
 
-  set menNumber(int? value) {
+  set menNumber(int value) {
     _menNumber = value!;
   }
 
@@ -39,10 +39,21 @@ class Guest{
     _type = value;
   }
 
-  int? get womenNumber => _womenNumber;
+  int get womenNumber => _womenNumber;
 
-  set womenNumber(int? value) {
+  set womenNumber(int value) {
     _womenNumber = value!;
+  }
+
+  toJson(){
+    return {
+      "name" : _name,
+      "phoneNumber" : _phoneNumber,
+      "type" : _type,
+      "isInvited" : _isInvited,
+      "menNumber" : _menNumber,
+      "womenNumber" : _womenNumber,
+    };
   }
 }
 

@@ -27,7 +27,7 @@ Future main() async{
 Map<String, WidgetBuilder> routes = {
   "/": (context) => const HomeScreen(),
   "/addReminder": (context) => const AddReminder(),
-  "/addGuest" : (context)=> const AddGuest(),
+  "/addGuest" : (context)=> AddGuest(),
   "/login" : (context)=> const Login(),
 };
 

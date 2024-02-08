@@ -23,4 +23,12 @@ class Reminder {
   set time(DateTime? value) {
     _time = value;
   }
+
+  toJson(){
+    return {
+      "title" : _title,
+      "date" : _date,
+      "time" : _time,
+    };
+  }
 }

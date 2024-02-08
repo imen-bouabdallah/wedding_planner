@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wedding_planner/classes/Guest.dart';
 
 class AddGuest extends StatefulWidget {
@@ -14,7 +16,7 @@ class _AddGuestState extends State<AddGuest> {
   final _guestType = TextEditingController();
   final _menNumber = TextEditingController();
   final _womenNumber = TextEditingController();
-  var guest;
+
 
   bool _validateName = false, _validateType = false;
 
@@ -30,10 +32,10 @@ class _AddGuestState extends State<AddGuest> {
   }
   @override
   Widget build(BuildContext context) {
+    var guest = null;
     if(ModalRoute.of(context)!.settings.arguments!=null) {
       guest = ModalRoute.of(context)!.settings.arguments as Guest; //get the passed data
-    }
-    if (guest.toString().isNotEmpty && guest != null){
+
       _guestNameController.text = guest.name;
       _guestType.text = guest.type;
       _menNumber.text = guest.menNumber.toString();
@@ -46,7 +48,7 @@ class _AddGuestState extends State<AddGuest> {
 
     return Scaffold(
       appBar: AppBar(
-        title: guest.toString().isEmpty? const Text("Add Guest") : const Text("Edit Guest"),
+        title: guest==null ? const Text("Add Guest") : const Text("Edit Guest"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -58,7 +60,6 @@ class _AddGuestState extends State<AddGuest> {
             children: [
               const SizedBox(height: 30,),
               TextField(
-
                  controller: _guestNameController,
                 decoration: InputDecoration(
                     border: const OutlineInputBorder(),
@@ -101,7 +102,6 @@ class _AddGuestState extends State<AddGuest> {
                         labelText: 'Women count',
                       ),
                       onTapOutside: (event) {
-                        print('onTapOutside');
                         FocusManager.instance.primaryFocus?.unfocus();
                       },
                     ),
@@ -147,9 +147,21 @@ class _AddGuestState extends State<AddGuest> {
                       });
 
                       if(!_validateName && !_validateType){
-                        print('save guest');
-                        //if mencount not empty add it
+                        ///see if we need to save a new one or edit an existing
+                        var db = FirebaseFirestore.instance;
+                        if(guest==null){ //save
+                          //create a new one
+                          var newGuest = Guest(_guestNameController.text, _guestType.text, _phoneNumberController.text, int.parse(_womenNumber.text), int.parse(_menNumber.text));
+                          db.collection("Guest").add(newGuest.toJson()).whenComplete(
+                                  (){ 
+                                    Fluttertoast.showToast(msg: "new guest saved successfully");
+                                  }
+                          ).catchError((error, stackTrace){
+                            Fluttertoast.showToast(msg: "Error, something went wrong please try again");
+                          });
+                        }
                       }
+
                     }, child: const Text('Save')),
                   ],
                 ),

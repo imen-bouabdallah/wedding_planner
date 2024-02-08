@@ -276,7 +276,7 @@ class _Guest_listState extends State<Guest_list> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AddGuest()),
+            MaterialPageRoute(builder: (context) => AddGuest()),
           );
         },
         child: const Icon(Icons.add),

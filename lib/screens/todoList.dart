@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wedding_planner/classes/ToDo_item.dart';
+import 'package:wedding_planner/classes/User.dart';
 
 class Todo_list extends StatefulWidget {
   const Todo_list({super.key});
@@ -10,26 +11,27 @@ class Todo_list extends StatefulWidget {
 }
 
 class _Todo_listState extends State<Todo_list> {
+  final user = User("me");
   final List<ToDo_item> items = [
-    ToDo_item("first note"),
-    ToDo_item("something kind of short"),
-    ToDo_item("something long very long not too much"),
-    ToDo_item("something"),
-    ToDo_item("a note that contains something"),
-    ToDo_item("something kind of short"),
-    ToDo_item("something kind of short"),
-    ToDo_item("something long very long not too much"),
-    ToDo_item("something"),
-    ToDo_item("a note that contains something"),
-    ToDo_item("something kind of short"),
-    ToDo_item("something kind of short"),
-    ToDo_item("something long very long not too much"),
-    ToDo_item("something"),
-    ToDo_item("a note that contains something"),
-    ToDo_item("something kind of short"),
+    ToDo_item("first note", User("me")),
+    ToDo_item("something kind of short", User("me")),
+    ToDo_item("something long very long not too much", User("me")),
+    ToDo_item("something", User("me")),
+    ToDo_item("a note that contains something", User("me")),
+    ToDo_item("something kind of short", User("me")),
+    ToDo_item("something kind of short", User("me")),
+    ToDo_item("something long very long not too much", User("me")),
+    ToDo_item("something", User("me")),
+    ToDo_item("a note that contains something", User("me")),
+    ToDo_item("something kind of short", User("me")),
+    ToDo_item("something kind of short", User("me")),
+    ToDo_item("something long very long not too much", User("me")),
+    ToDo_item("something", User("me")),
+    ToDo_item("a note that contains something", User("me")),
+    ToDo_item("something kind of short", User("me")),
     ToDo_item(
-        "something long very long not too much that it can go on more that one ligne yest  "),
-    ToDo_item("something")
+        "something long very long not too much that it can go on more that one ligne yest  ", User("me")),
+    ToDo_item("something", User("me"))
   ];
   late List<ToDo_item> _completedItems;
   late List<ToDo_item> _items;
@@ -87,12 +89,12 @@ class _Todo_listState extends State<Todo_list> {
   Widget _buildToDo(ToDo_item item, int i) {
     //build the tiles
     return ListTile(
-      onLongPress: () {
+      onLongPress: item.private ? () {
         setState(() {
           _isSelected[i] = true;
           _appBar = _selectBar;
         });
-      },
+      } : null,
       leading: Checkbox(
         value: item.done,
         onChanged: (bool? value) {
@@ -231,7 +233,7 @@ class _Todo_listState extends State<Todo_list> {
                 // Navigator.of(context).pop();
                 // _addTodoItem(_textFieldController.text);
                 setState(() {
-                  items.add(ToDo_item(_taskController.text));
+                  items.add(ToDo_item(_taskController.text, User("me")));
                 });
               },
               child: const Text('Add'),

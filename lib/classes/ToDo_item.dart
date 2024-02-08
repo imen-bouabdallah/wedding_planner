@@ -1,12 +1,15 @@
+import 'package:wedding_planner/classes/User.dart';
+
 class ToDo_item{
   String _text;
-  bool _private = false; //is the item private or public
+  User _creator;
+  bool _private = true; //is the item private or public
   bool _done = false;
 
 
-  ToDo_item(this._text);
+  ToDo_item(this._text, this._creator);
 
-  ToDo_item.withPrivacy(this._text, this._private);
+  ToDo_item.withPrivacy(this._text , this._creator, this._private);
 
   bool get done => _done;
 
@@ -15,7 +18,11 @@ class ToDo_item{
   }
 
 
+  User get creator => _creator;
 
+  set creator(User value) {
+    _creator = value;
+  }
 
   bool get private => _private;
 
@@ -27,6 +34,15 @@ class ToDo_item{
 
   set text(String value) {
     _text = value;
+  }
+
+  toJson(){
+    return {
+      "text" : _text,
+      "done" : _done,
+      "private" : _private,
+      "creator" : _creator,
+    };
   }
 
 }

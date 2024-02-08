@@ -22,4 +22,12 @@ class ShopItem{
   set bought(bool value) {
     _bought = value;
   }
+
+  toJson(){
+    return {
+      "name" : _name,
+      "price" : _price,
+      "bought" : _bought,
+    };
+  }
 }
