@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wedding_planner/classes/Functions.dart';
+import 'package:wedding_planner/classes/Helpers.dart';
 import 'package:wedding_planner/classes/Reminder.dart';
 import 'package:wedding_planner/screens/addReminder.dart';
 

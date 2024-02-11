@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wedding_planner/classes/Functions.dart';
 import 'package:wedding_planner/classes/ShopItem.dart';
 
 
@@ -48,7 +47,7 @@ class _ShoppingState extends State<Shopping> {
                   child: const Text('Edit'))),
           PopupMenuItem(
               child: TextButton(
-                  onPressed: (){confirmDelete(context);            },
+                  onPressed: (){/*confirmDelete(context, item);*/            },
                   child: const Text('Delete'))),
         ],
       ),
@@ -70,6 +69,7 @@ class _ShoppingState extends State<Shopping> {
               children: [
                 TextField(
                   controller: _itemController,
+                  textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
                     hintText: 'Purchased item',
                     errorText: _validateItem ? "Value Can't Be Empty" : null,),

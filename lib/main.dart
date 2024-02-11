@@ -5,8 +5,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wedding_planner/firebase_options.dart';
 import 'package:wedding_planner/screens/addGuest.dart';
 import 'package:wedding_planner/screens/addReminder.dart';
-import 'package:wedding_planner/screens/homeScreen.dart';
-import 'package:wedding_planner/screens/login.dart';
+import 'package:wedding_planner/screens/connect/login.dart';
+import 'package:wedding_planner/screens/connect/signup.dart';
+import 'package:wedding_planner/screens/pages/homeScreen.dart';
 import 'package:wedding_planner/style/Theme.dart';
 
 
@@ -27,8 +28,9 @@ Future main() async{
 Map<String, WidgetBuilder> routes = {
   "/": (context) => const HomeScreen(),
   "/addReminder": (context) => const AddReminder(),
-  "/addGuest" : (context)=> AddGuest(),
+  "/addGuest" : (context)=> const AddGuest(),
   "/login" : (context)=> const Login(),
+  "/signup" : (context)=> SignupPage(),
 };
 
 class MyApp extends ConsumerWidget {

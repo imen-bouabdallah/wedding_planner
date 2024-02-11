@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:wedding_planner/classes/Helpers.dart';
 import 'package:wedding_planner/classes/Guest.dart';
 
 class AddGuest extends StatefulWidget {
@@ -60,6 +61,7 @@ class _AddGuestState extends State<AddGuest> {
             children: [
               const SizedBox(height: 30,),
               TextField(
+                textCapitalization: TextCapitalization.words,
                  controller: _guestNameController,
                 decoration: InputDecoration(
                     border: const OutlineInputBorder(),
@@ -140,26 +142,49 @@ class _AddGuestState extends State<AddGuest> {
                       Navigator.of(context).pop();
                     }, child: const Text('Cancel')),
                     const SizedBox(width: 10,),
-                    FilledButton(onPressed: (){
+                    FilledButton(onPressed: () {
                       setState(() {
                         _validateName = _guestNameController.text.isEmpty;
                         _validateType = _guestType.text.isEmpty;
                       });
 
                       if(!_validateName && !_validateType){
+                        if(_womenNumber.text.isEmpty) _womenNumber.text = '0';
+                        if(_menNumber.text.isEmpty) _menNumber.text = '1';
+
                         ///see if we need to save a new one or edit an existing
-                        var db = FirebaseFirestore.instance;
+                        var db = FirebaseFirestore.instance.collection("Guest");
+                        var newGuest = Guest(_guestNameController.text, _guestType.text, _phoneNumberController.text, int.parse(_womenNumber.text), int.parse(_menNumber.text));
+
                         if(guest==null){ //save
                           //create a new one
-                          var newGuest = Guest(_guestNameController.text, _guestType.text, _phoneNumberController.text, int.parse(_womenNumber.text), int.parse(_menNumber.text));
-                          db.collection("Guest").add(newGuest.toJson()).whenComplete(
-                                  (){ 
-                                    Fluttertoast.showToast(msg: "new guest saved successfully");
-                                  }
+                          db.add(newGuest.toJson()).whenComplete(
+                                  (){
+                                Fluttertoast.showToast(msg: "new guest saved successfully");
+                                Navigator.pop(context);
+                              }
                           ).catchError((error, stackTrace){
                             Fluttertoast.showToast(msg: "Error, something went wrong please try again");
                           });
                         }
+                        else { //edit
+                          db
+                              .doc(guest.id)
+                              .update({
+                            'name' : newGuest.name,
+                            "phoneNumber" : newGuest.phoneNumber,
+                            "type" : newGuest.type,
+                            "menNumber" : newGuest.menNumber,
+                            "womenNumber" : newGuest.womenNumber,
+                          })
+                              .then((_) { Fluttertoast.showToast(msg: "Edited successfully");
+                                Navigator.pop(context);})
+                              .catchError((error) => Fluttertoast.showToast(msg: "Error, something went wrong please try again"));
+                        }
+
+
+
+
                       }
 
                     }, child: const Text('Save')),

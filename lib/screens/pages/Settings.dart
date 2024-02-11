@@ -1,15 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:wedding_planner/classes/Helpers.dart';
 import 'package:wedding_planner/style/Theme.dart';
 
-class Settings extends StatefulWidget {
-  const Settings({super.key});
+class settings extends StatefulWidget {
+  const settings({super.key});
 
   @override
-  State<Settings> createState() => _SettingsState();
+  State<settings> createState() => _SettingsState();
 }
 
-class _SettingsState extends State<Settings> {
+class _SettingsState extends State<settings> {
   bool _reminder = true;
 
   @override
@@ -85,7 +86,7 @@ class _SettingsState extends State<Settings> {
 
           const Divider(),
           TextButton(
-              onPressed: (){FirebaseAuth.instance.signOut();},
+              onPressed: (){confirmLogout(context);},
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,

@@ -8,6 +8,8 @@ Color dun = const Color(0xFFDBC9A3); //appbar //menu background
 Color floral = const Color(0xFFF6F2E8); //background
 Color dimGrey = const Color(0xFF6F6F6F);
 Color green_ = const Color(0xFF77AF9C);
+Color darkGreen = const Color(0xFF7A9E7E);
+Color maize = const Color(0xFFD4C685);
 
 final appThemeProvider = StateProvider<bool>((ref) => false);
 

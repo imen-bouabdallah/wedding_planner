@@ -74,6 +74,8 @@ dependencies:
 
   cloud_firestore: ^4.15.4
 
+  firebase_database: ^10.4.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,7 +1,8 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:wedding_planner/classes/Functions.dart';
+import 'package:flutter_exit_app/flutter_exit_app.dart';
+import 'package:wedding_planner/classes/Helpers.dart';
 import 'package:wedding_planner/style/Theme.dart';
 
 class Login extends StatefulWidget {
@@ -23,17 +24,27 @@ class _LoginState extends State<Login> {
       }
     });
 
-    return Scaffold(
-        body: StreamBuilder(
-            stream: FirebaseAuth.instance.authStateChanges(),
-            builder: (context, snapshot) {
-              if(snapshot.hasError) {
-                return const Text("Something went wrong");
-              }
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop){
+        FlutterExitApp.exitApp();
+      },
+      child: Scaffold(
+          body: StreamBuilder<User?>(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: (context, snapshot) {
+                if(snapshot.hasError) {
+                  return const Text("Something went wrong");
+                }
 
-              return LoginWidget(context);
-            }
-        )
+                if(!snapshot.hasData) {
+                  Navigator.popAndPushNamed(context, '/');
+                }
+
+                return LoginWidget(context);
+              }
+          )
+      ),
     );
   }
 

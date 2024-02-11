@@ -1,14 +1,15 @@
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_count_down/date_count_down.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_exit_app/flutter_exit_app.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:wedding_planner/screens/Settings.dart';
-import 'package:wedding_planner/screens/guestList.dart';
-import 'package:wedding_planner/screens/reminderList.dart';
-import 'package:wedding_planner/screens/shoppingList.dart';
-import 'package:wedding_planner/screens/todoList.dart';
+import 'package:wedding_planner/classes/Helpers.dart';
+import 'package:wedding_planner/screens/pages/Settings.dart';
+import 'package:wedding_planner/screens/pages/guestList.dart';
+import 'package:wedding_planner/screens/pages/reminderList.dart';
+import 'package:wedding_planner/screens/pages/shoppingList.dart';
+import 'package:wedding_planner/screens/pages/todoList.dart';
 import 'package:wedding_planner/style/Theme.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime date =  DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour);
   DateTime weddingDate = DateTime.utc(2024, DateTime.july, 6, 0);
   int CurrentButton= 0; //for bottom navigation bar -- current selected button
+
 
 
   @override
@@ -39,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return PopScope( //this widget allows overriding back button
       canPop: true,
       onPopInvoked: (didPop){
-        FlutterExitApp.exitApp();
+        //FlutterExitApp.exitApp();
       },
       child: Scaffold(
         appBar: AppBar(
@@ -49,9 +51,12 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(onPressed: (){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const Settings()),
+                MaterialPageRoute(builder: (context) => const settings()),
               );
             }, icon: const Icon(Icons.settings)),
+          IconButton(onPressed: (){
+            confirmLogout(context);
+          }, icon: const Icon(Icons.logout)),
           ],
         ),
       
@@ -125,45 +130,75 @@ class _HomeScreenState extends State<HomeScreen> {
       
                 ),
               ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("XX Guests not invited Yet"),
-                ],
+              const SizedBox(height: 15,),
+              UnconstrainedBox(
+                child: Container(
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.black)
+                  ),
+                  child: Center(
+                    child: StreamBuilder(
+                        stream: FirebaseFirestore
+                            .instance
+                            .collection('Guest')
+                            .where('isInvited', isEqualTo: false)
+                            .snapshots(),
+                        builder: (context, snapshot)  {
+                          if(snapshot.hasData){
+                
+                            if(snapshot.connectionState == ConnectionState.active){
+                              return Text("${snapshot.data?.docs.length} Guests not yet invited!",
+                                style:  TextStyle(
+                                  fontSize: 20,
+                                  fontStyle: FontStyle.italic,
+                                  color: gold
+                                ),
+                              );
+                            }
+                            else if (snapshot.hasError){
+                              return Center(child: Text(snapshot.error.toString()),);
+                            }
+                          }
+                          return const Center(child: Text("Connection problem"),);
+                        }),
+                  ),
+                ),
               ),
       
             ],
           ),
         ),
-        bottomNavigationBar: NavigationBar(
-          onDestinationSelected: (int index) {
-            setState(() {
-              CurrentButton = index;
-      
-      
-              if (index==0){ //reminders
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ReminderList()),
-                );
-      
-              }
-              else if (index==1){ //shopping list
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Shopping()),
-                );
-              }
-              else if (index==2){ //guests
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Guest_list()),
-                );
-              }
-              else if (index==3){ //todos
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Todo_list()),
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(() {
+            CurrentButton = index;
+
+
+            if (index==0){ //reminders
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ReminderList()),
+              );
+
+            }
+            else if (index==1){ //shopping list
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Shopping()),
+              );
+            }
+            else if (index==2){ //guests
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Guest_list()),
+              );
+            }
+            else if (index==3){ //todos
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Todo_list()),
                 );
               }
             });
@@ -175,30 +210,32 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.notifications_outlined),
               label: 'Reminder', //text under icon
             ),
-      
+
             NavigationDestination(
               selectedIcon: Icon(Icons.shopping_bag), //the icon when the button is active
               icon: Icon(Icons.shopping_bag_outlined),
               label: 'Budget', //text under icon
             ),
-      
+
             NavigationDestination(
               selectedIcon: Icon(Icons.person), //the icon when the button is active
               icon: Icon(Icons.person_outline),
               label: 'Guest', //text under icon
             ),
-      
+
             NavigationDestination(
               selectedIcon: Icon(Icons.check_box), //the icon when the button is active
               icon: Icon(Icons.check_box_outlined),
               label: 'ToDo list', //text under icon
             ),
-      
+
           ],
-      
+
         ),
       
       ),
     );
   }
+
+
 }

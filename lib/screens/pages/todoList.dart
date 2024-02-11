@@ -11,27 +11,27 @@ class Todo_list extends StatefulWidget {
 }
 
 class _Todo_listState extends State<Todo_list> {
-  final user = User("me");
+  final user = Users("me");
   final List<ToDo_item> items = [
-    ToDo_item("first note", User("me")),
-    ToDo_item("something kind of short", User("me")),
-    ToDo_item("something long very long not too much", User("me")),
-    ToDo_item("something", User("me")),
-    ToDo_item("a note that contains something", User("me")),
-    ToDo_item("something kind of short", User("me")),
-    ToDo_item("something kind of short", User("me")),
-    ToDo_item("something long very long not too much", User("me")),
-    ToDo_item("something", User("me")),
-    ToDo_item("a note that contains something", User("me")),
-    ToDo_item("something kind of short", User("me")),
-    ToDo_item("something kind of short", User("me")),
-    ToDo_item("something long very long not too much", User("me")),
-    ToDo_item("something", User("me")),
-    ToDo_item("a note that contains something", User("me")),
-    ToDo_item("something kind of short", User("me")),
+    ToDo_item("first note", Users("me")),
+    ToDo_item("something kind of short", Users("me")),
+    ToDo_item("something long very long not too much", Users("me")),
+    ToDo_item("something", Users("me")),
+    ToDo_item("a note that contains something", Users("me")),
+    ToDo_item("something kind of short", Users("me")),
+    ToDo_item("something kind of short", Users("me")),
+    ToDo_item("something long very long not too much", Users("me")),
+    ToDo_item("something", Users("me")),
+    ToDo_item("a note that contains something", Users("me")),
+    ToDo_item("something kind of short", Users("me")),
+    ToDo_item("something kind of short", Users("me")),
+    ToDo_item("something long very long not too much", Users("me")),
+    ToDo_item("something", Users("me")),
+    ToDo_item("a note that contains something", Users("me")),
+    ToDo_item("something kind of short", Users("me")),
     ToDo_item(
-        "something long very long not too much that it can go on more that one ligne yest  ", User("me")),
-    ToDo_item("something", User("me"))
+        "something long very long not too much that it can go on more that one ligne yest  ", Users("me")),
+    ToDo_item("something", Users("me"))
   ];
   late List<ToDo_item> _completedItems;
   late List<ToDo_item> _items;
@@ -202,6 +202,7 @@ class _Todo_listState extends State<Todo_list> {
           title: const Text('Add a todo'),
           content: TextFormField(
             controller: _taskController,
+            textCapitalization: TextCapitalization.words,
             decoration: const InputDecoration(hintText: 'Type your todo'),
             autofocus: true,
             validator: (value) {
@@ -233,7 +234,7 @@ class _Todo_listState extends State<Todo_list> {
                 // Navigator.of(context).pop();
                 // _addTodoItem(_textFieldController.text);
                 setState(() {
-                  items.add(ToDo_item(_taskController.text, User("me")));
+                  items.add(ToDo_item(_taskController.text, Users("me")));
                 });
               },
               child: const Text('Add'),

@@ -1,15 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wedding_planner/classes/User.dart';
 
 class ToDo_item{
+  String _id;
   String _text;
-  User _creator;
+  Users _creator;
   bool _private = true; //is the item private or public
   bool _done = false;
 
 
-  ToDo_item(this._text, this._creator);
-
-  ToDo_item.withPrivacy(this._text , this._creator, this._private);
+  ToDo_item(this._text, this._creator, [this._private = true, this._done = false, this._id = '']);
 
   bool get done => _done;
 
@@ -18,9 +18,9 @@ class ToDo_item{
   }
 
 
-  User get creator => _creator;
+  Users get creator => _creator;
 
-  set creator(User value) {
+  set creator(Users value) {
     _creator = value;
   }
 
@@ -36,6 +36,13 @@ class ToDo_item{
     _text = value;
   }
 
+
+  String get id => _id;
+
+  set id(String value) {
+    _id = value;
+  }
+
   toJson(){
     return {
       "text" : _text,
@@ -43,6 +50,17 @@ class ToDo_item{
       "private" : _private,
       "creator" : _creator,
     };
+  }
+
+  factory ToDo_item.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document){
+    final data = document.data()!;
+    return ToDo_item(
+      data["text"],
+      data["creator"],
+      data["private"],
+      data["done"],
+      document.id,
+    );
   }
 
 }
