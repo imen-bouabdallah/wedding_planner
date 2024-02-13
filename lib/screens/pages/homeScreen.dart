@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return PopScope( //this widget allows overriding back button
       canPop: true,
       onPopInvoked: (didPop){
-        //FlutterExitApp.exitApp();
+        FlutterExitApp.exitApp();
       },
       child: Scaffold(
         appBar: AppBar(
@@ -190,10 +190,10 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }
             else if (index==2){ //guests
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Guest_list()),
-              );
+               Navigator.push(
+                 context,
+                 MaterialPageRoute(builder: (context) => const Guest_list()),
+               );
             }
             else if (index==3){ //todos
               Navigator.push(

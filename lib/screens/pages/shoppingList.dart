@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:wedding_planner/classes/Helpers.dart';
 import 'package:wedding_planner/classes/ShopItem.dart';
+import 'package:wedding_planner/style/Theme.dart';
 
 
 class Shopping extends StatefulWidget {
@@ -10,10 +14,13 @@ class Shopping extends StatefulWidget {
 }
 
 class _ShoppingState extends State<Shopping> {
-  List shopList = [ShopItem("batata"), ShopItem("bsal", 500)];
+  List shopList = [];
 
   final _itemController = TextEditingController();
   final _priceController = TextEditingController();
+
+  var db = FirebaseFirestore.instance.collection('ShopItems');
+  late Stream<QuerySnapshot> _stream;
 
   int _spending=0, _total=0;
 
@@ -21,14 +28,6 @@ class _ShoppingState extends State<Shopping> {
 
   Widget _shopItem(ShopItem item, int index){
     return ListTile(
-      leading: Checkbox(
-        onChanged: (bool? value){
-          setState(() {
-            item.bought = value!;
-            _calculateSpending();
-          });
-          },
-        value: item.bought,),
       title: Text(item.name, style: const TextStyle(fontSize: 20),),
       subtitle: Row(
         children: [
@@ -36,7 +35,26 @@ class _ShoppingState extends State<Shopping> {
           (item.price!=null) ? Text('Price : ${item.price.toString()}') : const SizedBox(),
         ],
       ),
-      trailing: PopupMenuButton(
+      trailing: Checkbox(
+        onChanged: (bool? value){
+          setState(() {
+            item.bought = value!;
+            _calculateSpending();
+          });
+          db.doc(item.id).update({"bought" : item.bought}).then((_) {
+            if(value!)  Fluttertoast.showToast(msg: "Item purchased!");
+          })
+              .catchError((error) => Fluttertoast.showToast(msg: "Error, something went wrong please try again"));;
+
+        },
+        value: item.bought,
+
+      ),
+
+
+
+      /*
+      PopupMenuButton(
         itemBuilder: (context)=> <PopupMenuEntry>[
           PopupMenuItem(
               child: TextButton(
@@ -50,7 +68,7 @@ class _ShoppingState extends State<Shopping> {
                   onPressed: (){/*confirmDelete(context, item);*/            },
                   child: const Text('Delete'))),
         ],
-      ),
+      ),*/
     );
   }
 
@@ -77,7 +95,7 @@ class _ShoppingState extends State<Shopping> {
                 ),
                 TextField(
                   controller: _priceController,
-                  decoration: const InputDecoration(hintText: 'Price'),
+                  decoration: const InputDecoration(hintText: 'Price (optional)'),
                   keyboardType: TextInputType.number,
                 )
               ],
@@ -98,21 +116,26 @@ class _ShoppingState extends State<Shopping> {
               ),
               ElevatedButton(
                 child: const Text('Add'),
-                onPressed: () {
+                onPressed: () async {
                   setState(() {
                     _validateItem = _itemController.text.isEmpty;
                   });
                   if (!_validateItem) {
+
                     if (_priceController.text.isNotEmpty) {
-                      shopList.add(ShopItem(_itemController.text,
-                          int.parse(_priceController.text)));
+                      ShopItem item = ShopItem(_itemController.text, int.parse(_priceController.text));
+                      await createShopItem(item, context);
+
                     } else {
-                      shopList.add(ShopItem(_itemController.text));
+
+                      ShopItem item = ShopItem(_itemController.text, 0);
+                      //add it to db
+                      await createShopItem(item, context);
                     }
+
                     _priceController.clear();
                     _itemController.clear();
                     _calculateTotal();
-                    Navigator.of(context).pop();
                   }
                 },
               ),
@@ -155,6 +178,8 @@ class _ShoppingState extends State<Shopping> {
   void initState() {
     _calculateSpending();
     _calculateTotal();
+
+    _stream = db.snapshots();
     super.initState();
   }
 
@@ -169,48 +194,76 @@ class _ShoppingState extends State<Shopping> {
           const SizedBox(height: 40,),
           Expanded(
             flex: 1,
-              child: ListView.builder(
-                itemCount: shopList.length,
-                  itemBuilder: (context, index){
-                  return _shopItem(shopList[index], index);
-                  })),
+              child: StreamBuilder(
+                  stream: _stream,
+                  builder: (context, snapshot) {
+                    if(snapshot.hasData){
+
+                      if(snapshot.connectionState == ConnectionState.active){
+                        shopList = getList(snapshot);
+                        return ListView.builder(
+                            itemCount: shopList.length,
+                            itemBuilder: (context, index){
+                              return _shopItem(shopList[index], index);
+                            });
+                      }
+
+                    }
+                    else if(snapshot.hasError){
+                      return Center(child: Text("Error ${snapshot.error}"),);
+                    }
+                    else{
+                      return const CircularProgressIndicator();
+                    }
+                    return const SizedBox();
+                  },)
+          ),
           const SizedBox(height: 10,),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(width: 2),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                padding: const EdgeInsets.all(15),
-                child: Column(
-                  children: [
-                     Text('Spent \n $_spending',
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                const SizedBox(width: 10,),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 2,  color: gold.withOpacity(0.6)),
+                    borderRadius: BorderRadius.circular(5),
+                      gradient: LinearGradient(
+                          colors: [gold.withOpacity(0.4), dun.withOpacity(0.6)]
+                      )
+                  ),
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    children: [
+                       Text('Money spent :  $_spending',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
 
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const VerticalDivider(thickness: 5, color: Colors.black,),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(width: 2),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                padding: const EdgeInsets.all(15),
-                child: Column(
-                  children: [
-                    Text('Total \n $_total',
-                      textAlign: TextAlign.center,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+                const SizedBox(width: 10,),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 2, color: gold.withOpacity(0.6)),
+                    borderRadius: BorderRadius.circular(5),
+                    gradient: LinearGradient(
+                      colors: [gold.withOpacity(0.4), dun.withOpacity(0.6)]
+                    )
+                  ),
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    children: [
+                      Text('Aproximate total : $_total',
+                        textAlign: TextAlign.center,
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
 
-                  ],
+                    ],
+                  ),
                 ),
-              )
-            ],
+                const SizedBox(width: 10,),
+              ],
+            ),
           ),
           const SizedBox(height: 100,),
         ],
@@ -220,5 +273,12 @@ class _ShoppingState extends State<Shopping> {
         child:  const Icon(Icons.add),
       ),
     );
+  }
+
+  getList(snapshot){
+    QuerySnapshot query = snapshot.data;
+    return query.docs.map((e) => ShopItem.fromSnapshot(e as DocumentSnapshot<Map<String, dynamic>>)).toList();
+
+
   }
 }

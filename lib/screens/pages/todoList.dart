@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:wedding_planner/classes/Helpers.dart';
 import 'package:wedding_planner/classes/ToDo_item.dart';
-import 'package:wedding_planner/classes/User.dart';
 
 class Todo_list extends StatefulWidget {
   const Todo_list({super.key});
@@ -11,38 +13,17 @@ class Todo_list extends StatefulWidget {
 }
 
 class _Todo_listState extends State<Todo_list> {
-  final user = Users("me");
-  final List<ToDo_item> items = [
-    ToDo_item("first note", Users("me")),
-    ToDo_item("something kind of short", Users("me")),
-    ToDo_item("something long very long not too much", Users("me")),
-    ToDo_item("something", Users("me")),
-    ToDo_item("a note that contains something", Users("me")),
-    ToDo_item("something kind of short", Users("me")),
-    ToDo_item("something kind of short", Users("me")),
-    ToDo_item("something long very long not too much", Users("me")),
-    ToDo_item("something", Users("me")),
-    ToDo_item("a note that contains something", Users("me")),
-    ToDo_item("something kind of short", Users("me")),
-    ToDo_item("something kind of short", Users("me")),
-    ToDo_item("something long very long not too much", Users("me")),
-    ToDo_item("something", Users("me")),
-    ToDo_item("a note that contains something", Users("me")),
-    ToDo_item("something kind of short", Users("me")),
-    ToDo_item(
-        "something long very long not too much that it can go on more that one ligne yest  ", Users("me")),
-    ToDo_item("something", Users("me"))
-  ];
-  late List<ToDo_item> _completedItems;
-  late List<ToDo_item> _items;
+  List selectedItems = [];  List _completedItems = [];  List _items = [];
 
   final _taskController = TextEditingController();
 
   FToast fToast = FToast();
 
   int completed = 0;
+  var db = FirebaseFirestore.instance.collection('Tasks');
+  late Stream<QuerySnapshot> _stream, _streamComplete;
 
-  late List<bool> _isSelected = List.generate(items.length, (i) => false);
+  late List<bool> _isSelected = List.generate(selectedItems.length, (i) => false);
 
   static final AppBar _defaultBar = AppBar(
     title: const Text('Tasks'),
@@ -53,38 +34,6 @@ class _Todo_listState extends State<Todo_list> {
 
   AppBar _selectBar = AppBar();
 
-  @override
-  void initState() {
-
-    _completedItems = items.where((e) => e.done == true).toList();
-    completed = _completedItems.length;
-
-    _items = items.where((e) => e.done == false).toList();
-
-
-    fToast.init(context);
-
-    _selectBar = AppBar(
-      //when a note is selected change app bar
-      backgroundColor: Colors.deepPurpleAccent,
-      leading: IconButton(
-          onPressed: () {
-            setState(() {
-              _appBar = _defaultBar;
-              _isSelected = List.generate(items.length, (i) => false);
-
-              ///unselect all tiles
-            });
-          },
-          icon: const Icon(Icons.close)),
-      title: const Text('number'),
-      actions: [
-        IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
-        IconButton(onPressed: () {}, icon: const Icon(Icons.delete)),
-      ],
-      automaticallyImplyLeading: false,
-    );
-  }
 
   Widget _buildToDo(ToDo_item item, int i) {
     //build the tiles
@@ -93,6 +42,7 @@ class _Todo_listState extends State<Todo_list> {
         setState(() {
           _isSelected[i] = true;
           _appBar = _selectBar;
+          selectedItems.add(item);
         });
       } : null,
       leading: Checkbox(
@@ -100,37 +50,15 @@ class _Todo_listState extends State<Todo_list> {
         onChanged: (bool? value) {
           setState(() {
             item.done = value!;
-            item.done ? completed++ : completed--;
 
-            if(item.done) //remove the item from one list and add it to another
-            {_completedItems.add(item); _items.remove(item);}
-            else {_completedItems.remove(item); _items.add(item);}
-            //push the done todos to the end of the list
-            //items.sort((a, b) => (a == b ? 0 : (a.done ? 0 : -1)));
+            //updateData in firestore
+            db
+                .doc(item.id)
+                .update({"done":item.done}).then((_) {
+                  if(value)  Fluttertoast.showToast(msg: "You've complete the task!");
+                  })
+        .catchError((error) => Fluttertoast.showToast(msg: "Error, something went wrong please try again"));
 
-            if (value) {
-              fToast.showToast(
-                toastDuration: const Duration(milliseconds: 1500),
-                child: Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: Colors.black38,
-                    border: Border.all(),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.done),
-                      Text(
-                        " You've complete the task!  ",
-                      )
-                    ],
-                  ),
-                ),
-                gravity: ToastGravity.BOTTOM,
-              );
-            }
           });
         },
       ),
@@ -177,6 +105,7 @@ class _Todo_listState extends State<Todo_list> {
                                     setState(() {
                                       item.private = !item.private;
                                     });
+                                    db.doc(item.id).update({"private" : item.private});
                                     Navigator.pop(context);
                                   },
                                   child: const Text('Yes'),
@@ -202,7 +131,7 @@ class _Todo_listState extends State<Todo_list> {
           title: const Text('Add a todo'),
           content: TextFormField(
             controller: _taskController,
-            textCapitalization: TextCapitalization.words,
+            textCapitalization: TextCapitalization.sentences,
             decoration: const InputDecoration(hintText: 'Type your todo'),
             autofocus: true,
             validator: (value) {
@@ -220,6 +149,7 @@ class _Todo_listState extends State<Todo_list> {
                 ),
               ),
               onPressed: () {
+                _taskController.clear();
                 Navigator.of(context).pop();
               },
               child: const Text('Cancel'),
@@ -231,11 +161,12 @@ class _Todo_listState extends State<Todo_list> {
                 ),
               ),
               onPressed: () {
-                // Navigator.of(context).pop();
-                // _addTodoItem(_textFieldController.text);
-                setState(() {
-                  items.add(ToDo_item(_taskController.text, Users("me")));
-                });
+
+                var item = ToDo_item(_taskController.text,FirebaseAuth.instance.currentUser!.uid.toString(), false, false);
+                  createTask(item);
+                  _taskController.clear();
+
+                Navigator.of(context).pop();
               },
               child: const Text('Add'),
             ),
@@ -245,10 +176,38 @@ class _Todo_listState extends State<Todo_list> {
     );
   }
 
-  _updateTodoList(){
-    setState(() {
-      items.length;
-    });
+
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    _stream = db.where("done", isEqualTo: false).snapshots();
+    _streamComplete = db.where("done", isEqualTo: true).snapshots();
+
+    fToast.init(context);
+
+    _selectBar = AppBar(
+      //when a note is selected change app bar
+      backgroundColor: Colors.deepPurpleAccent,
+      leading: IconButton(
+          onPressed: () {
+            setState(() {
+              _appBar = _defaultBar;
+              _isSelected = List.generate(selectedItems.length, (i) => false);
+
+              ///unselect all tiles
+            });
+          },
+          icon: const Icon(Icons.close)),
+      title: const Text('number'),
+      actions: [
+        IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
+        IconButton(onPressed: () {}, icon: const Icon(Icons.delete)),
+      ],
+      automaticallyImplyLeading: false,
+    );
   }
 
   @override
@@ -262,39 +221,109 @@ class _Todo_listState extends State<Todo_list> {
     return Scaffold(
       appBar: _appBar,
       body: SingleChildScrollView(
-        child: Column(
+        child:Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            const SizedBox(
-              height: 30,
-            ),
+          const SizedBox(
+          height: 30,
+        ),
 
-            ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),//to make it scroll with the column instead of by itself
-              shrinkWrap: true,
-                itemCount: _items.length,
-                itemBuilder: (context, index){
-                  return _buildToDo(_items[index], index);
-                }),
+        StreamBuilder< QuerySnapshot>(
+          stream:_stream,
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if(snapshot.hasData){
+              if(snapshot.connectionState == ConnectionState.active){
+                QuerySnapshot query = snapshot.data;
+                print(query.docs);
+                _items = query.docs.map((e) =>
+                    ToDo_item.fromSnapshot(e as DocumentSnapshot<Map<String, dynamic>>))
+                    .toList();
+
+                  return ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),//to make it scroll with the column instead of by itself
+                      shrinkWrap: true,
+                      itemCount: _items.length,
+                      itemBuilder: (context, index){
+                        return _buildToDo(_items[index], index);
+                      });
+              }
+            }
+            else if(snapshot.hasError){
+              print(snapshot.error.toString());
+            }
+            else {
+              return const CircularProgressIndicator();
+            }
+            return const SizedBox();
+          },
+
+        ),
+
+
             const Divider(indent: 10, endIndent: 10),
 
             ///if the task is done it's moved down the list
-            Row(
-              children: [
-                Text('   Completed (${completed.toString()})'),
-              ],
+          StreamBuilder(
+              stream: _streamComplete,
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if(snapshot.hasData){
+                  if(snapshot.connectionState == ConnectionState.active){
+                    return Row(
+                      children: [
+                        Text('   Completed (${snapshot.data?.size})'),
+                      ],
+                    );
+                  }
+                }else if(snapshot.hasError){
+                  print(snapshot.error.toString());
+                }
+                else {
+                  return const CircularProgressIndicator();
+                }
+
+                return const Row(
+                  children: [
+                    Text('   Completed (0)'),
+                  ],
+                );
+              }
+          ),
+
+            StreamBuilder(
+              stream: _streamComplete,
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)  {
+                if(snapshot.hasData){
+                  if(snapshot.connectionState == ConnectionState.active){
+
+                    _completedItems = snapshot.data.docs.map((e) =>
+                        ToDo_item.fromSnapshot(e as DocumentSnapshot<Map<String, dynamic>>))
+                        .toList();
+
+                    return ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: _completedItems.length,
+                        itemBuilder: (context, index){
+                          return _buildToDo(_completedItems[index], index);
+                        });
+
+                  }
+                }
+                else if(snapshot.hasError){
+                  print(snapshot.error.toString());
+                }
+                else {
+                  return const CircularProgressIndicator();
+                }
+                return const SizedBox();
+              },
+
             ),
 
-            ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: _completedItems.length,
-                itemBuilder: (context, index){
-                  return _buildToDo(_completedItems[index], index);
-                }),
+
             const SizedBox(height: 50),
-          ],
-        ),
+          ]
+        )
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _createTodo(),
@@ -305,3 +334,5 @@ class _Todo_listState extends State<Todo_list> {
     );
   }
 }
+
+

@@ -29,7 +29,6 @@ class _Guest_listState extends State<Guest_list> {
   @override
   void initState() {
      super.initState();
-
      _streamGuestList = _refGuestList.snapshots();
 
   }
@@ -78,7 +77,7 @@ class _Guest_listState extends State<Guest_list> {
                 //icon: const Icon(Icons.email),
                   child: Row(
                     children: [
-                      Text('Send an invitation', style: TextStyle(color: gold),),
+                      Text('Send an invitation', style: TextStyle(color: gold, fontSize: 20),),
                       const SizedBox(width: 4,),
                       Icon(Icons.email, color: gold,),
                       const SizedBox(width: 10,),
@@ -102,7 +101,7 @@ class _Guest_listState extends State<Guest_list> {
             ]
           ),
 
-          const SizedBox(height: 20,),
+          const SizedBox(height: 10,),
           StreamBuilder<QuerySnapshot>(
               stream:  _streamGuestList,
               builder: (context, AsyncSnapshot snapshot){
@@ -111,6 +110,9 @@ class _Guest_listState extends State<Guest_list> {
                 }
                 else if(snapshot.connectionState == ConnectionState.active){
                   guestList = getGuests(snapshot);
+                  guestList.sort((a, b) {
+                    return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+                  });
                   return  Expanded(
                     flex: 5,
                     child: ListView.separated(

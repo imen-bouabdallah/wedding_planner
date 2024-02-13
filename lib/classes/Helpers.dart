@@ -8,7 +8,7 @@ import 'package:wedding_planner/classes/Reminder.dart';
 import 'package:wedding_planner/classes/ToDo_item.dart';
 import 'package:wedding_planner/classes/ShopItem.dart';
 import 'package:wedding_planner/classes/User.dart';
-import 'package:wedding_planner/screens/pages/homeScreen.dart';
+import 'package:wedding_planner/screens/connect/login.dart';
 
 
 
@@ -64,8 +64,15 @@ Future confirmLogout(context) {
           ),
           FilledButton(
             onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              Navigator.popAndPushNamed(context, "/login");
+              await FirebaseAuth.instance.signOut().then((value){
+                print('signout succesfully');
+              }).onError((error, stackTrace) { print("error");});
+
+              Navigator.of(context).pushAndRemoveUntil(
+                  new MaterialPageRoute(
+                      builder: (context) =>
+                       Login()),
+                      (route) => false);
             },
             child: const Text('Yes'),
           ),
@@ -102,12 +109,18 @@ Future SignIn(String email, String password, context) async{ //with email
   
   if(result) {
     await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email, password: password);
+        email: email, password: password).then((value){
+      Navigator.popAndPushNamed(
+        context,
+        '/',
+      );
+      Fluttertoast.showToast(msg: "Welcome!");
+    }).onError((error, stackTrace) {
+      print(error);
+      Fluttertoast.showToast(msg: "email or password incorrect");
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
-    );
+    });
+
   }
   else{
     Fluttertoast.showToast(msg: "No internet connection!");
@@ -122,6 +135,24 @@ Future signInWithNumber() async {
       );*/
 }
 
+signup(Users user, context) async {
+  try{
+    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: user.email, password: user.password)
+        .then((value){
+      Fluttertoast.showToast(msg: "Account created successfully");
+      Navigator.popAndPushNamed(context, "/");
+    }
+    ).onError((error, stackTrace) {
+      Fluttertoast.showToast(msg: "error");
+    });
+  } on FirebaseAuthException catch (e) {
+    print(e);
+    Fluttertoast.showToast(msg: "error");
+  }
+}
+
+
 
 
 ///Database
@@ -133,7 +164,7 @@ deleteItem(String collection, element){
 
 var db_guest = FirebaseFirestore.instance.collection('Guest');
 var db_task = FirebaseFirestore.instance.collection('Tasks');
-var db_shopItem = FirebaseFirestore.instance.collection('ShopItem');
+var db_shopItem = FirebaseFirestore.instance.collection('ShopItems');
 var db_reminder = FirebaseFirestore.instance.collection('Reminder');
 var db_user = FirebaseFirestore.instance.collection('User');
 //////////////////////////////////////////////////////////// Guests
@@ -208,13 +239,16 @@ updateTask(ToDo_item todoItem){
 
 
 ////////////////////////////////// Shop Items
-createShopItem(ShopItem item) async {
+createShopItem(ShopItem item, context) async {
 
   await db_shopItem.add(item.toJson()).whenComplete(
           (){
         Fluttertoast.showToast(msg: "new item saved successfully");
+        print("seccus");
+        Navigator.pop(context);
       }
   ).catchError((error, stackTrace){
+    print("erroro $error");
     Fluttertoast.showToast(msg: "Error, something went wrong please try again");
   });
 }
@@ -234,16 +268,6 @@ createReminder(Reminder reminder) async {
 
 
 /////////////////////////////////////////// User
-createUser(Users user) async {
-
-  await db_user.add(user.toJson()).whenComplete(
-          (){
-        Fluttertoast.showToast(msg: "new account created successfully");
-      }
-  ).catchError((error, stackTrace){
-    Fluttertoast.showToast(msg: "Error, something went wrong please try again");
-  });
-}
 
 Future<Guest> getUser(String name) async{
   final snapshot = await db_user.where('userName', isEqualTo: name).get();

@@ -43,7 +43,7 @@ class MyApp extends ConsumerWidget {
       theme: getAppTheme(context, ref.watch(appThemeProvider)),
       debugShowCheckedModeBanner: false,
       routes: routes,
-      initialRoute: '/',
+      initialRoute: '/login',
     );
   }
 }

@@ -1,15 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:wedding_planner/classes/User.dart';
 
 class ToDo_item{
   String _id;
   String _text;
-  Users _creator;
+  String _creator;
   bool _private = true; //is the item private or public
   bool _done = false;
 
 
-  ToDo_item(this._text, this._creator, [this._private = true, this._done = false, this._id = '']);
+  ToDo_item(this._text, this._creator, [this._private = true, this._done = false, this._id ='']);
 
   bool get done => _done;
 
@@ -18,9 +17,9 @@ class ToDo_item{
   }
 
 
-  Users get creator => _creator;
+  String get creator => _creator;
 
-  set creator(Users value) {
+  set creator(String value) {
     _creator = value;
   }
 

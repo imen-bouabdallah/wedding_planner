@@ -2,7 +2,9 @@ import 'package:animate_do/animate_do.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_exit_app/flutter_exit_app.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wedding_planner/classes/Helpers.dart';
+import 'package:wedding_planner/screens/pages/homeScreen.dart';
 import 'package:wedding_planner/style/Theme.dart';
 
 class Login extends StatefulWidget {
@@ -15,6 +17,14 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _validateEmail = false, _validatePass = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +47,15 @@ class _LoginState extends State<Login> {
                   return const Text("Something went wrong");
                 }
 
-                if(!snapshot.hasData) {
-                  Navigator.popAndPushNamed(context, '/');
+                if(snapshot.hasData) { //if there is data
+                  Fluttertoast.showToast(msg: "Already signed in");
+                  print('already signed \n\n\n');
+                  return const HomeScreen();
+                }
+                else {
+                  return LoginWidget(context);
                 }
 
-                return LoginWidget(context);
               }
           )
       ),
@@ -53,7 +67,7 @@ class _LoginState extends State<Login> {
       child: Column(
         children: <Widget>[
           SizedBox(
-            height: 250,
+            height: 220,
             child: FadeInUp(
                 duration: const Duration(milliseconds: 1600),
                 child: Container(
@@ -110,8 +124,8 @@ class _LoginState extends State<Login> {
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Email",
-                                  errorText:
-                                  "This field can't be empty",
+                                  errorText: _validateEmail ?
+                                  "This field can't be empty" : null,
                                   hintStyle: TextStyle(
                                       color: Colors.grey[700])),
                             ),
@@ -124,8 +138,8 @@ class _LoginState extends State<Login> {
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Password",
-                                  errorText:
-                                  "This field can't be empty",
+                                  errorText: _validatePass ?
+                                  "This field can't be empty" : null,
                                   hintStyle: TextStyle(
                                       color: Colors.grey[700])),
                             ),
@@ -147,10 +161,11 @@ class _LoginState extends State<Login> {
                               colors: [dun, goldAccent])),
                       child: TextButton(
                         onPressed: () {
-                          if (_emailController
-                              .text.isNotEmpty &&
-                              _passwordController
-                                  .text.isNotEmpty) {
+                          setState(() {
+                            _validateEmail = _emailController.text.isEmpty;
+                            _validatePass = _passwordController.text.isEmpty;
+                          });
+                          if (!_validateEmail && !_validatePass) {
                             SignIn(
                                 _emailController.text,
                                 _passwordController.text,
@@ -167,9 +182,7 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                     )),
-                const SizedBox(
-                  height: 10,
-                ),
+
                 FadeInUp(
                     duration:
                     const Duration(milliseconds: 2000),
@@ -180,14 +193,12 @@ class _LoginState extends State<Login> {
                         style: TextStyle(color: gold),
                       ),
                     )),
-                const SizedBox(
-                  height: 20,
-                ),
+
                 FadeInUp(
                     duration:
                     const Duration(milliseconds: 1700),
                     child: const Text(
-                      "Continue with social media",
+                      "Continue with other options",
                       style: TextStyle(color: Colors.grey),
                     )),
                 const SizedBox(
@@ -200,13 +211,13 @@ class _LoginState extends State<Login> {
                           duration: const Duration(
                               milliseconds: 1800),
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(context, "/signup");
+                            },
                             style: ButtonStyle(
                               backgroundColor:
                               MaterialStateProperty.all(
-                                  Colors.white),
-                              foregroundColor: null,
-                              iconColor: null,
+                                  dun),
                             ),
                             child: const Row(
                               mainAxisAlignment:
@@ -214,16 +225,14 @@ class _LoginState extends State<Login> {
                               children: [
                                 ImageIcon(
                                   AssetImage(
-                                      "assets/icon/google.png"),
-                                  color: Colors.black,
+                                      "assets/icon/user.png"),
                                 ),
                                 SizedBox(
                                   width: 10,
                                 ),
                                 Text(
-                                  "Gmail",
+                                  "SignUp",
                                   style: TextStyle(
-                                      color: Colors.black,
                                       fontWeight:
                                       FontWeight.bold),
                                 ),
@@ -243,8 +252,7 @@ class _LoginState extends State<Login> {
                             style: ButtonStyle(
                               backgroundColor:
                               MaterialStateProperty.all(
-                                  Colors.white),
-                              iconColor: null,
+                                  dun),
                             ),
                             child: const Row(
                               mainAxisAlignment:
@@ -253,7 +261,6 @@ class _LoginState extends State<Login> {
                                 ImageIcon(
                                   AssetImage(
                                       "assets/icon/otp.png"),
-                                  color: Colors.black,
                                 ),
                                 SizedBox(
                                   width: 5,
@@ -261,7 +268,6 @@ class _LoginState extends State<Login> {
                                 Text(
                                   "Phone N°",
                                   style: TextStyle(
-                                      color: Colors.black,
                                       fontWeight:
                                       FontWeight.bold),
                                 ),

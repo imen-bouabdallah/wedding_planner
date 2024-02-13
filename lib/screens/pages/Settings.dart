@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:wedding_planner/classes/Helpers.dart';
 import 'package:wedding_planner/style/Theme.dart';
