@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:wedding_planner/classes/Account.dart';
 import 'package:wedding_planner/classes/Helpers.dart';
 import 'package:wedding_planner/classes/User.dart';
 import 'package:wedding_planner/style/Theme.dart';
@@ -17,8 +18,9 @@ class _SignupPageState extends State<SignupPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPassController = TextEditingController();
+  final _userController = TextEditingController();
 
-  bool _validateEmail = false, _validatePass = false, _validateConf = false;
+  bool _validateEmail = false, _validatePass = false, _validateConf = false, _validateUser = false;
   String _confText = "";
   String _passText = "", _emailText ="";
 
@@ -64,6 +66,13 @@ class _SignupPageState extends State<SignupPage> {
                 children: [
                   FadeInUp(duration: const Duration(milliseconds: 1200),
                       child: makeInput(
+                          label: "User name",
+                          controller: _userController,
+                          error: _validateUser,
+                          errorText: 'Field cannot be empty'
+                      )),
+                  FadeInUp(duration: const Duration(milliseconds: 1200),
+                      child: makeInput(
                           label: "Email",
                           controller: _emailController,
                           error: _validateEmail,
@@ -104,6 +113,7 @@ class _SignupPageState extends State<SignupPage> {
                         _validatePass = _passwordController.text.isEmpty;
                         _validateConf = _confirmPassController.text.isEmpty;
                         _validateEmail = _emailController.text.isEmpty;
+                        _validateUser = _userController.text.isEmpty;
                       });
 
                       //if password or confirm password is empty we signal that
@@ -112,7 +122,10 @@ class _SignupPageState extends State<SignupPage> {
                       if(_validateEmail) _emailText = 'Field cannot be empty';
 
 
-                      if(!_validateConf && !_validatePass && !_validateEmail){
+                      if(!_validateConf &&
+                          !_validatePass &&
+                          !_validateEmail &&
+                          !_validateUser){
                         //check email structure
 
                         _validateEmail = !EmailValidator.validate(_emailController.text);
@@ -123,15 +136,13 @@ class _SignupPageState extends State<SignupPage> {
                         else{
                           //if none of te fields is empty we compare password and confirm password
                           if(_passwordController.text != _confirmPassController.text){
-                            print('no match');
                             //if they are diffrent we display a msg
                             _validatePass = _validateConf = true;
                              _passText = "Password do not match"; _confText = "Password do not match";
                           }
                           else{
-                            print('signin');
-                            Users user = Users(_emailController.text.trim(), _passwordController.text.trim());
-                            signup(user, context);
+                            Account account = Account(_emailController.text.trim(), _passwordController.text.trim());
+                            signup(account, context, _userController.text);
                           }
                         }
 

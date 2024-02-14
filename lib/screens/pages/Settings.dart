@@ -90,8 +90,8 @@ class _SettingsState extends State<settings> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Logout ",),
-                  Icon(Icons.logout,),
+                  Text("Logout ", style: TextStyle(color: Colors.black),),
+                  Icon(Icons.logout,color: Colors.black,),
                 ],
               )
           ),

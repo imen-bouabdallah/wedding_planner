@@ -3,11 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Reminder {
   String _id;
   String _title;
+  String _description;
   DateTime _date;
-  DateTime? _time;
 
 
-  Reminder(this._title, this._date, [this._time, this._id = '']);
+  Reminder(this._title, this._date, [this._description = "", this._id = '']);
 
   String get title => _title;
 
@@ -21,12 +21,12 @@ class Reminder {
     _date = value;
   }
 
-  DateTime? get time => _time;
 
-  set time(DateTime? value) {
-    _time = value;
+  String get description => _description;
+
+  set description(String value) {
+    _description = value;
   }
-
 
   String get id => _id;
 
@@ -38,17 +38,18 @@ class Reminder {
     return {
       "title" : _title,
       "date" : _date,
-      "time" : _time,
+      "description" : _description
     };
   }
 
 
   factory Reminder.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document){
     final data = document.data()!;
+    final date = DateTime.parse(data["date"] .toDate().toString());
     return Reminder(
       data["title"],
-      data["date"],
-      data["time"],
+      date,
+      data["description"],
       document.id,
     );
   }

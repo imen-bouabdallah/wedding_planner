@@ -149,7 +149,6 @@ class _Guest_listState extends State<Guest_list> {
   List getGuests(snapshot){
     QuerySnapshot query = snapshot.data;
     return query.docs.map((e) => Guest.fromSnapshot(e as DocumentSnapshot<Map<String, dynamic>>)).toList();
-
   }
 
   Future addPhoneNumber(context){
@@ -204,6 +203,7 @@ class _Guest_listState extends State<Guest_list> {
   Widget _buildGuest(Guest guest, int index){
     return Material(
       child: ListTile(
+        key: ValueKey(guest),
         shape: RoundedRectangleBorder(
           side: BorderSide(color: goldAccent, width: 1),
           borderRadius: BorderRadius.circular(5),

@@ -35,16 +35,16 @@ class _Todo_listState extends State<Todo_list> {
   AppBar _selectBar = AppBar();
 
 
-  Widget _buildToDo(ToDo_item item, int i) {
+  Widget _buildToDo(ToDo_item item, int i){
     //build the tiles
     return ListTile(
-      onLongPress: item.private ? () {
+      onLongPress:  () {
         setState(() {
           _isSelected[i] = true;
           _appBar = _selectBar;
           selectedItems.add(item);
         });
-      } : null,
+      } ,
       leading: Checkbox(
         value: item.done,
         onChanged: (bool? value) {
@@ -62,7 +62,7 @@ class _Todo_listState extends State<Todo_list> {
           });
         },
       ),
-      subtitle: Column(
+      title: Column(
         children: [
           Row(
             children: [
@@ -77,48 +77,59 @@ class _Todo_listState extends State<Todo_list> {
                       : const TextStyle(),
                 ),
               ),
-              IconButton(
-                  onPressed: () {
-                    item.done? null :
-                    showDialog<String>(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                              title: const Text('Change privacy'),
-                              content: SingleChildScrollView(
-                                child: ListBody(
-                                  children: <Widget>[
-                                    Text(
-                                        item.private? 'Change the privacy to Public?'
-                                            : 'Change the privacy to Private?'),
-                                  ],
-                                ),
-                              ),
-                              actions: <Widget>[
-                                FilledButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('No'),
-                                ),
-                                FilledButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      item.private = !item.private;
-                                    });
-                                    db.doc(item.id).update({"private" : item.private});
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Yes'),
-                                ),
-                              ],
-                            ));
-                  },
-                  icon: Icon(
-                      !item.private ? Icons.lock_open_rounded : Icons.lock)),
+              /*item.private ? Text( '${convertUserName(item.id)} ',
+                style: TextStyle(fontStyle: FontStyle.italic),)
+                  : Text(''),*/
             ],
           ),
         ],
       ),
+
+
+      /*IconButton(
+          onPressed: () {
+            item.done? null :
+            showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Change privacy'),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text(
+                            item.private? 'Change the privacy to Public?'
+                                : 'Change the privacy to Private?'),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    FilledButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('No'),
+                    ),
+                    FilledButton(
+                      onPressed: () async {
+
+                        await db.doc(item.id).update({"private" : !item.private}).then(
+                                (value) {
+                              setState(() {
+                                item.private = !item.private;
+                              });
+                            }).onError((error, stackTrace) {
+                          Fluttertoast.showToast(msg: "only owner can change privacy of this item");
+                        });
+
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Yes'),
+                    ),
+                  ],
+                ));
+          },
+          icon: Icon(
+              !item.private ? Icons.lock_open_rounded : Icons.lock)),*/
     );
   }
 
@@ -162,7 +173,7 @@ class _Todo_listState extends State<Todo_list> {
               ),
               onPressed: () {
 
-                var item = ToDo_item(_taskController.text,FirebaseAuth.instance.currentUser!.uid.toString(), false, false);
+                var item = ToDo_item(_taskController.text,FirebaseAuth.instance.currentUser!.uid.toString(), false);
                   createTask(item);
                   _taskController.clear();
 
@@ -234,7 +245,6 @@ class _Todo_listState extends State<Todo_list> {
             if(snapshot.hasData){
               if(snapshot.connectionState == ConnectionState.active){
                 QuerySnapshot query = snapshot.data;
-                print(query.docs);
                 _items = query.docs.map((e) =>
                     ToDo_item.fromSnapshot(e as DocumentSnapshot<Map<String, dynamic>>))
                     .toList();
@@ -249,7 +259,7 @@ class _Todo_listState extends State<Todo_list> {
               }
             }
             else if(snapshot.hasError){
-              print(snapshot.error.toString());
+              return Text(snapshot.error.toString());
             }
             else {
               return const CircularProgressIndicator();
@@ -275,7 +285,7 @@ class _Todo_listState extends State<Todo_list> {
                     );
                   }
                 }else if(snapshot.hasError){
-                  print(snapshot.error.toString());
+                  return Text(snapshot.error.toString());
                 }
                 else {
                   return const CircularProgressIndicator();
@@ -310,7 +320,7 @@ class _Todo_listState extends State<Todo_list> {
                   }
                 }
                 else if(snapshot.hasError){
-                  print(snapshot.error.toString());
+                  return Text(snapshot.error.toString());
                 }
                 else {
                   return const CircularProgressIndicator();

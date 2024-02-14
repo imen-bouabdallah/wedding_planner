@@ -8,7 +8,7 @@ class ToDo_item{
   bool _done = false;
 
 
-  ToDo_item(this._text, this._creator, [this._private = true, this._done = false, this._id ='']);
+  ToDo_item(this._text, this._creator, [ this._done = false, this._id ='']);
 
   bool get done => _done;
 
@@ -23,11 +23,7 @@ class ToDo_item{
     _creator = value;
   }
 
-  bool get private => _private;
 
-  set private(bool value) {
-    _private = value;
-  }
 
   String get text => _text;
 
@@ -46,7 +42,6 @@ class ToDo_item{
     return {
       "text" : _text,
       "done" : _done,
-      "private" : _private,
       "creator" : _creator,
     };
   }
@@ -56,7 +51,6 @@ class ToDo_item{
     return ToDo_item(
       data["text"],
       data["creator"],
-      data["private"],
       data["done"],
       document.id,
     );

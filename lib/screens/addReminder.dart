@@ -1,5 +1,8 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
+import 'package:wedding_planner/classes/Helpers.dart';
 import 'package:wedding_planner/classes/Reminder.dart';
 import 'package:wedding_planner/style/Theme.dart';
 
@@ -20,8 +23,9 @@ class _AddReminderState extends State<AddReminder> {
   final _dateControler = TextEditingController();
   final _timeControler = TextEditingController();
   final _titleControler = TextEditingController();
+  final _descControler = TextEditingController();
 
-  var reminder;
+  var reminder = null;
 
 
   Future<void> _selectDate(BuildContext context) async {
@@ -31,7 +35,7 @@ class _AddReminderState extends State<AddReminder> {
         firstDate: _today,
         lastDate: DateTime(2101));
     if (picked != null && picked != _today) {
-      _dateControler.text = '${picked.day}/${picked.month}/${picked.year}';
+      _dateControler.text = '${picked.day}-${picked.month}-${picked.year}';
 
     }
   }
@@ -55,6 +59,28 @@ class _AddReminderState extends State<AddReminder> {
       _validateTitle = _titleControler.text.isEmpty;
       _validateDate = _dateControler.text.isEmpty;
     });
+
+    if(!_validateDate && !_validateTitle){
+      if(reminder==null){
+
+        DateFormat format;
+        var date;
+        if(_timeControler.text.isEmpty) {
+          format = new DateFormat("dd-MM-yyyy");
+          date = format.parse(_dateControler.text);
+        }
+        else {
+          format = new DateFormat("dd-MM-yyyy hh:mm");
+          date = format.parse("${_dateControler.text} ${_timeControler.text}");}
+
+          var reminde = Reminder(_titleControler.text, date, _descControler.text);
+          createReminder(reminde, context);
+        }
+      }
+
+    else Fluttertoast.showToast(msg: "not val");
+
+
   }
 
 
@@ -71,13 +97,14 @@ class _AddReminderState extends State<AddReminder> {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-
+                  Navigator.of(context).pop();
                 },
                 child: const Text('Cancel'),
               ),
               const VerticalDivider(),
               TextButton(
                 onPressed: () {
+                  Navigator.of(context).pop();
                   Navigator.of(context).pop();
                 },
                 child: const Text('Discard'),
@@ -86,7 +113,7 @@ class _AddReminderState extends State<AddReminder> {
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  // _addTodoItem(_textFieldController.text);
+                  _save();
                 },
                 child: const Text('Save'),
               ),
@@ -103,6 +130,7 @@ class _AddReminderState extends State<AddReminder> {
     _dateControler.dispose();
     _timeControler.dispose();
     _titleControler.dispose();
+    _descControler.dispose();
   }
 
 
@@ -153,10 +181,20 @@ class _AddReminderState extends State<AddReminder> {
             const SizedBox(height: 10,),
             TextField(
               controller: _titleControler,
+              textCapitalization: TextCapitalization.sentences,
               decoration:  InputDecoration(
                 border: const OutlineInputBorder(),
                 labelText: 'Enter reminder\'s title',
                 errorText: _validateTitle ? "Value Can't Be Empty" : null,
+              ),
+            ),
+            const SizedBox(height: 10,),
+            TextField(
+              controller: _descControler,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Description (optional)',
               ),
             ),
             const SizedBox(height: 10,),

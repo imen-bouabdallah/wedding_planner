@@ -45,8 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-      
           title: const Text("Wedding Planer"),
+          automaticallyImplyLeading: false,
           actions: [
             IconButton(onPressed: (){
               Navigator.push(

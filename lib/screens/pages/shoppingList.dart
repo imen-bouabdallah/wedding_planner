@@ -161,7 +161,7 @@ class _ShoppingState extends State<Shopping> {
 
   }
   _calculateTotal(){
-    setState(() {
+    _total=0;
       for (var element in shopList) {
         int a;
         if (element.price!=null) {
@@ -171,7 +171,7 @@ class _ShoppingState extends State<Shopping> {
         }
 
         _total += a;}
-    });
+
   }
 
   @override
@@ -192,77 +192,95 @@ class _ShoppingState extends State<Shopping> {
       body: Column(
         children: [
           const SizedBox(height: 40,),
-          Expanded(
-            flex: 1,
-              child: StreamBuilder(
-                  stream: _stream,
-                  builder: (context, snapshot) {
-                    if(snapshot.hasData){
+          StreamBuilder(
+              stream: _stream,
+              builder: (context, snapshot) {
+                if(snapshot.hasData){
+                  if(snapshot.connectionState == ConnectionState.active){
+                    shopList = getList(snapshot);
 
-                      if(snapshot.connectionState == ConnectionState.active){
-                        shopList = getList(snapshot);
-                        return ListView.builder(
+                    return Expanded(
+                      flex: 1,
+                      child: Scrollbar(
+                        child: ListView.builder(
                             itemCount: shopList.length,
                             itemBuilder: (context, index){
                               return _shopItem(shopList[index], index);
-                            });
-                      }
+                            }),
+                      ),
+                    );
+                  }
 
-                    }
-                    else if(snapshot.hasError){
-                      return Center(child: Text("Error ${snapshot.error}"),);
-                    }
-                    else{
-                      return const CircularProgressIndicator();
-                    }
-                    return const SizedBox();
-                  },)
-          ),
+                }
+                else if(snapshot.hasError){
+                  return Center(child: Text("Error ${snapshot.error}"),);
+                }
+                else{
+                  return const CircularProgressIndicator();
+                }
+                return const SizedBox();
+              },),
           const SizedBox(height: 10,),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                const SizedBox(width: 10,),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 2,  color: gold.withOpacity(0.6)),
-                    borderRadius: BorderRadius.circular(5),
-                      gradient: LinearGradient(
-                          colors: [gold.withOpacity(0.4), dun.withOpacity(0.6)]
-                      )
-                  ),
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    children: [
-                       Text('Money spent :  $_spending',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+            child: StreamBuilder(
+              stream: _stream,
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if(snapshot.hasData){
+                  if(snapshot.connectionState == ConnectionState.active){
+                    _calculateSpending();
+                    _calculateTotal();
+                    return Row(
+                      children: [
+                        const SizedBox(width: 10,),
+                        Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(width: 2,  color: gold.withOpacity(0.6)),
+                              borderRadius: BorderRadius.circular(5),
+                              gradient: LinearGradient(
+                                  colors: [gold.withOpacity(0.4), dun.withOpacity(0.6)]
+                              )
+                          ),
+                          padding: const EdgeInsets.all(15),
+                          child: Column(
+                            children: [
+                              Text('Money spent :  $_spending',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
 
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10,),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: gold.withOpacity(0.6)),
-                    borderRadius: BorderRadius.circular(5),
-                    gradient: LinearGradient(
-                      colors: [gold.withOpacity(0.4), dun.withOpacity(0.6)]
-                    )
-                  ),
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    children: [
-                      Text('Aproximate total : $_total',
-                        textAlign: TextAlign.center,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10,),
+                        Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(width: 2, color: gold.withOpacity(0.6)),
+                              borderRadius: BorderRadius.circular(5),
+                              gradient: LinearGradient(
+                                  colors: [gold.withOpacity(0.4), dun.withOpacity(0.6)]
+                              )
+                          ),
+                          padding: const EdgeInsets.all(15),
+                          child: Column(
+                            children: [
+                              Text('Aproximate total : $_total',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
 
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10,),
-              ],
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10,),
+                      ],
+                    );
+                  }
+                }
+                else if(snapshot.hasError){
+                  print(snapshot.error.toString());
+                }
+                return CircularProgressIndicator();
+              },
+
             ),
           ),
           const SizedBox(height: 100,),

@@ -10,6 +10,8 @@ import 'package:wedding_planner/classes/ShopItem.dart';
 import 'package:wedding_planner/classes/User.dart';
 import 'package:wedding_planner/screens/connect/login.dart';
 
+import 'Account.dart';
+
 
 
 Future confirmDelete(context, element ,String collection){
@@ -65,7 +67,6 @@ Future confirmLogout(context) {
           FilledButton(
             onPressed: () async {
               await FirebaseAuth.instance.signOut().then((value){
-                print('signout succesfully');
               }).onError((error, stackTrace) { print("error");});
 
               Navigator.of(context).pushAndRemoveUntil(
@@ -116,7 +117,6 @@ Future SignIn(String email, String password, context) async{ //with email
       );
       Fluttertoast.showToast(msg: "Welcome!");
     }).onError((error, stackTrace) {
-      print(error);
       Fluttertoast.showToast(msg: "email or password incorrect");
 
     });
@@ -135,22 +135,31 @@ Future signInWithNumber() async {
       );*/
 }
 
-signup(Users user, context) async {
+signup(Account account, context, userName) async {
   try{
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: user.email, password: user.password)
-        .then((value){
-      Fluttertoast.showToast(msg: "Account created successfully");
-      Navigator.popAndPushNamed(context, "/");
-    }
-    ).onError((error, stackTrace) {
-      Fluttertoast.showToast(msg: "error");
-    });
+
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: account.email, password: account.password)
+          .then((value) {
+        Fluttertoast.showToast(msg: "Account created successfully", toastLength: Toast.LENGTH_SHORT,);
+
+        createUser(Users(userName, account.email, FirebaseAuth.instance.currentUser!.uid));
+
+        Fluttertoast.showToast(msg: "Welcome $userName");
+        Navigator.popAndPushNamed(context, "/");
+      }
+      ).onError((error, stackTrace) {
+        if(error == 'ERROR_EMAIL_ALREADY_IN_USE') {
+          Fluttertoast.showToast(msg: "Account exists already!");
+        }
+        else Fluttertoast.showToast(msg: "error");
+      });
+
   } on FirebaseAuthException catch (e) {
-    print(e);
     Fluttertoast.showToast(msg: "error");
   }
 }
+
 
 
 
@@ -165,8 +174,8 @@ deleteItem(String collection, element){
 var db_guest = FirebaseFirestore.instance.collection('Guest');
 var db_task = FirebaseFirestore.instance.collection('Tasks');
 var db_shopItem = FirebaseFirestore.instance.collection('ShopItems');
-var db_reminder = FirebaseFirestore.instance.collection('Reminder');
-var db_user = FirebaseFirestore.instance.collection('User');
+var db_reminder = FirebaseFirestore.instance.collection('Reminders');
+var db_user = FirebaseFirestore.instance.collection('Users');
 //////////////////////////////////////////////////////////// Guests
 
 
@@ -178,30 +187,6 @@ Future<Guest> getGuest(String name) async{
 
 Future<List<Guest>> getAllGuest() async{
   final snapshot = await db_guest.get();
-  final guestData = snapshot.docs.map((e) => Guest.fromSnapshot(e)).toList();
-  return guestData;
-}
-
-
-
-getFriendsGuest() async{
-  final snapshot = await db_guest.where('type', isEqualTo: 'Friends').get().then(
-          (snapshot) {
-        print("Successfully completed");
-      },
-      onError: (e) => print("Error completing: $e"));
-  final guestData = snapshot.docs.map((e) => Guest.fromSnapshot(e)).toList();
-  return guestData;
-}
-
-getNeighborsGuest() async{
-  final snapshot = await db_guest.where('type', isEqualTo: 'Neighbors').get();
-  final guestData = snapshot.docs.map((e) => Guest.fromSnapshot(e)).toList();
-  return guestData;
-}
-
-getOthersGuest() async{
-  final snapshot = await db_guest.where('type', isEqualTo: 'Others').get();
   final guestData = snapshot.docs.map((e) => Guest.fromSnapshot(e)).toList();
   return guestData;
 }
@@ -244,22 +229,21 @@ createShopItem(ShopItem item, context) async {
   await db_shopItem.add(item.toJson()).whenComplete(
           (){
         Fluttertoast.showToast(msg: "new item saved successfully");
-        print("seccus");
         Navigator.pop(context);
       }
   ).catchError((error, stackTrace){
-    print("erroro $error");
-    Fluttertoast.showToast(msg: "Error, something went wrong please try again");
+    Fluttertoast.showToast(msg: "Error, something went wrong ");
   });
 }
 
 
 /////////////////////////////////// Reminder
-createReminder(Reminder reminder) async {
+createReminder(Reminder reminder, context) async {
 
   await db_reminder.add(reminder.toJson()).whenComplete(
           (){
         Fluttertoast.showToast(msg: "new reminder created successfully");
+        Navigator.pop(context);
       }
   ).catchError((error, stackTrace){
     Fluttertoast.showToast(msg: "Error, something went wrong please try again");
@@ -269,9 +253,29 @@ createReminder(Reminder reminder) async {
 
 /////////////////////////////////////////// User
 
-Future<Guest> getUser(String name) async{
-  final snapshot = await db_user.where('userName', isEqualTo: name).get();
-  final guestData = snapshot.docs.map((e) => Guest.fromSnapshot(e)).single;
-  return guestData;
+createUser(Users user) async {
+
+  await db_user.add(user.toJson()).catchError((error, stackTrace){
+    Fluttertoast.showToast(msg: "Error, something went wrong please try again");
+  });
+}
+
+Future<Users> getUser(String id) async{
+  final snapshot = await db_user.where('id', isEqualTo: id).get();
+  final user = snapshot.docs.map((e) => Users.fromSnapshot(e)).single;
+  return user;
+}
+
+getUserName(String id)  async {
+  final snapshot = await db_user.where('id', isEqualTo: id).get();
+  final user = snapshot.docs.map((e) => Users.fromSnapshot(e)).single;
+  print(user.userName);
+  print("ze here");
+  return user.userName;
+}
+
+String convertUserName(id){
+  String a = getUserName(id).toString();
+  return a;
 }
 

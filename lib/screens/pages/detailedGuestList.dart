@@ -153,7 +153,7 @@ class _DetailedListState extends State<DetailedList> {
                             }
                           }
                           else if(snapshot.hasError){
-                            print(snapshot.error.toString());
+                            return Text(snapshot.error.toString());
                           }
                           else {
                             return const CircularProgressIndicator();
@@ -193,7 +193,7 @@ class _DetailedListState extends State<DetailedList> {
                             }
                           }
                           else if(snapshot.hasError){
-                            print(snapshot.error.toString());
+                            return Text(snapshot.error.toString());
                           }
                           else {
                             return const CircularProgressIndicator();
@@ -233,7 +233,7 @@ class _DetailedListState extends State<DetailedList> {
                             }
                           }
                           else if(snapshot.hasError){
-                            print(snapshot.error.toString());
+                            return Text(snapshot.error.toString());
                           }
                           else {
                             return const CircularProgressIndicator();
@@ -273,7 +273,7 @@ class _DetailedListState extends State<DetailedList> {
                             }
                           }
                           else if(snapshot.hasError){
-                            print(snapshot.error.toString());
+                            return Text(snapshot.error.toString());
                           }
                           else {
                             return const CircularProgressIndicator();

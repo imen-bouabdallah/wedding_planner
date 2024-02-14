@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_exit_app/flutter_exit_app.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wedding_planner/classes/Helpers.dart';
@@ -49,7 +50,6 @@ class _LoginState extends State<Login> {
 
                 if(snapshot.hasData) { //if there is data
                   Fluttertoast.showToast(msg: "Already signed in");
-                  print('already signed \n\n\n');
                   return const HomeScreen();
                 }
                 else {
@@ -121,6 +121,7 @@ class _LoginState extends State<Login> {
                                         color: gold))),
                             child: TextField(
                               controller: _emailController,
+                              autofillHints: [AutofillHints.newUsername],
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Email",
@@ -135,6 +136,7 @@ class _LoginState extends State<Login> {
                             child: TextField(
                               controller: _passwordController,
                               obscureText: true,
+                              autofillHints: [AutofillHints.newPassword],
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Password",
@@ -170,6 +172,7 @@ class _LoginState extends State<Login> {
                                 _emailController.text,
                                 _passwordController.text,
                                 context);
+                            TextInput.finishAutofillContext();
                           }
                         },
                         child: const Center(
@@ -240,7 +243,7 @@ class _LoginState extends State<Login> {
                             ),
                           )),
                     ),
-                    const SizedBox(
+                   /* const SizedBox(
                       width: 30,
                     ),
                     Expanded(
@@ -257,13 +260,11 @@ class _LoginState extends State<Login> {
                             child: const Row(
                               mainAxisAlignment:
                               MainAxisAlignment.center,
+
                               children: [
                                 ImageIcon(
                                   AssetImage(
                                       "assets/icon/otp.png"),
-                                ),
-                                SizedBox(
-                                  width: 5,
                                 ),
                                 Text(
                                   "Phone N°",
@@ -274,7 +275,7 @@ class _LoginState extends State<Login> {
                               ],
                             ),
                           )),
-                    )
+                    )*/
                   ],
                 ),
                 const SizedBox(

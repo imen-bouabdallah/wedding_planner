@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:wedding_planner/classes/Helpers.dart';
 import 'package:wedding_planner/classes/Reminder.dart';
 import 'package:wedding_planner/screens/addReminder.dart';
+import 'package:wedding_planner/style/Theme.dart';
 
 class ReminderList extends StatefulWidget {
   const ReminderList({super.key});
@@ -12,26 +14,40 @@ class ReminderList extends StatefulWidget {
 
 class _ReminderListState extends State<ReminderList> {
 
-  final List<Reminder> _reminders = [Reminder('do something', DateTime(2024, 5, 20), DateTime(0,0,0,12,11))];
+  List _reminders = [];
+  late Stream<QuerySnapshot> _stream;
 
 
   Widget _createReminder(Reminder reminder){
-    return ListTile(
-
-      title: Text(reminder.title),
-      subtitle: Text("${reminder.date.day.toString()}/${reminder.date.month.toString()}/${reminder.date.year.toString()} "
-          "at ${reminder.time?.hour.toString()}:${reminder.time?.minute.toString()}"),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(onPressed: (){}, icon: const Icon(Icons.notifications_active)),
-          sideMenu('/addReminder', reminder)
-        ],
-      )
-
+    return Material(
+      color: goldAccent,
+      child: ListTile(
+      
+        title: Text(reminder.title),
+        subtitle: reminder.description.isNotEmpty ? Text(reminder.description) : null,
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            reminder.date.hour != 0 && reminder.date.minute!=0 ?
+            Text("${reminder.date.day.toString()}/${reminder.date.month.toString()}/${reminder.date.year.toString()}\n "
+                "at ${reminder.date.hour.toString()}:${reminder.date.minute.toString()}",
+              style: TextStyle(color: gold, fontSize: 14),) :
+            Text("${reminder.date.day.toString()}/${reminder.date.month.toString()}/${reminder.date.year.toString()} ",
+              style: TextStyle(color: gold, fontSize: 14),),
+            //IconButton(onPressed: (){}, icon: const Icon(Icons.notifications_active)),
+            sideMenu('/addReminder', reminder)
+          ],
+        )
+      
+      ),
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _stream = db_reminder.snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,12 +56,30 @@ class _ReminderListState extends State<ReminderList> {
         title: const Text("Reminders"),
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
-        child: ListView.builder(
-          itemCount: _reminders.length,
-           itemBuilder: (context, item){
-             return _createReminder(_reminders[item]);
-           }
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+        child: StreamBuilder(
+          stream: _stream,
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if(snapshot.hasData){
+              if(snapshot.connectionState == ConnectionState.active){
+                _reminders = getReminders(snapshot);
+                return ListView.separated(
+                    itemCount: _reminders.length,
+                    itemBuilder: (context, item){
+                  return _createReminder(_reminders[item]);
+                }, separatorBuilder: (BuildContext context, int index) => const SizedBox(
+                  height: 10,
+                ));
+              }
+            }
+            else if(snapshot.hasError){
+              print(snapshot.error.toString());
+            }
+            else return const Center(child: CircularProgressIndicator());
+
+            return const SizedBox();
+          },
+
         ),
       ),
 
@@ -57,6 +91,11 @@ class _ReminderListState extends State<ReminderList> {
       ),
     );
   }
+}
+
+List getReminders(snapshot){
+  QuerySnapshot query = snapshot.data;
+  return query.docs.map((e) => Reminder.fromSnapshot(e as DocumentSnapshot<Map<String, dynamic>>)).toList();
 }
 
 Route _createRoute() {

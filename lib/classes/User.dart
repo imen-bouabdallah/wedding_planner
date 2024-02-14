@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Users{
   String _id;
+  String _userName;
   String _email;
-  String _password;
 
-  Users([ this._email = "", this._password = "", this._id = ""]);
+  Users([ this._userName = "", this._email = "", this._id = ""]);
 
   String get id => _id;
 
@@ -21,25 +21,25 @@ class Users{
   }
 
 
-  String get password => _password;
+  String get userName => _userName;
 
-  set password(String value) {
-    _password = value;
+  set userName(String value) {
+    _userName = value;
   }
 
   toJson(){
     return {
       "id" : _id,
       "email" : _email,
-      "password" : _password,
+      "userName" : _userName,
     };
   }
 
   factory Users.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document){
     final data = document.data()!;
     return Users(
+      data["userName"],
       data["email"],
-      data["password"],
       document.id,
     );
   }
