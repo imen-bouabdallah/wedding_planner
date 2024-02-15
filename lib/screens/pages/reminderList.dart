@@ -4,6 +4,7 @@ import 'package:wedding_planner/classes/Helpers.dart';
 import 'package:wedding_planner/classes/Reminder.dart';
 import 'package:wedding_planner/screens/addReminder.dart';
 import 'package:wedding_planner/style/Theme.dart';
+import 'package:wedding_planner/utils/Menus.dart';
 
 class ReminderList extends StatefulWidget {
   const ReminderList({super.key});
@@ -35,7 +36,7 @@ class _ReminderListState extends State<ReminderList> {
             Text("${reminder.date.day.toString()}/${reminder.date.month.toString()}/${reminder.date.year.toString()} ",
               style: TextStyle(color: gold, fontSize: 14),),
             //IconButton(onPressed: (){}, icon: const Icon(Icons.notifications_active)),
-            sideMenu('/addReminder', reminder)
+            sideMenu('/addReminder', reminder, "Reminders")
           ],
         )
       

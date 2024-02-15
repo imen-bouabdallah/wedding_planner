@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wedding_planner/classes/Helpers.dart';
 import 'package:wedding_planner/classes/ToDo_item.dart';
+import 'package:wedding_planner/utils/Dialogs.dart';
 
 class Todo_list extends StatefulWidget {
   const Todo_list({super.key});
@@ -23,27 +24,11 @@ class _Todo_listState extends State<Todo_list> {
   var db = FirebaseFirestore.instance.collection('Tasks');
   late Stream<QuerySnapshot> _stream, _streamComplete;
 
-  late List<bool> _isSelected = List.generate(selectedItems.length, (i) => false);
-
-  static final AppBar _defaultBar = AppBar(
-    title: const Text('Tasks'),
-    actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert))],
-  );
-
-  AppBar _appBar = _defaultBar;
-
-  AppBar _selectBar = AppBar();
-
-
   Widget _buildToDo(ToDo_item item, int i){
     //build the tiles
     return ListTile(
       onLongPress:  () {
-        setState(() {
-          _isSelected[i] = true;
-          _appBar = _selectBar;
-          selectedItems.add(item);
-        });
+        confirmDelete(context, item, "Tasks");
       } ,
       leading: Checkbox(
         value: item.done,
@@ -188,8 +173,6 @@ class _Todo_listState extends State<Todo_list> {
   }
 
 
-
-
   @override
   void initState() {
     super.initState();
@@ -199,26 +182,6 @@ class _Todo_listState extends State<Todo_list> {
 
     fToast.init(context);
 
-    _selectBar = AppBar(
-      //when a note is selected change app bar
-      backgroundColor: Colors.deepPurpleAccent,
-      leading: IconButton(
-          onPressed: () {
-            setState(() {
-              _appBar = _defaultBar;
-              _isSelected = List.generate(selectedItems.length, (i) => false);
-
-              ///unselect all tiles
-            });
-          },
-          icon: const Icon(Icons.close)),
-      title: const Text('number'),
-      actions: [
-        IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
-        IconButton(onPressed: () {}, icon: const Icon(Icons.delete)),
-      ],
-      automaticallyImplyLeading: false,
-    );
   }
 
   @override
@@ -230,7 +193,9 @@ class _Todo_listState extends State<Todo_list> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _appBar,
+      appBar: AppBar(
+        title: const Text('Tasks'),
+      ),
       body: SingleChildScrollView(
         child:Column(
           mainAxisSize: MainAxisSize.max,

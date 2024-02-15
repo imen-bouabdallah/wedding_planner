@@ -78,10 +78,6 @@ dependencies:
 
   email_validator: ^2.1.17
 
-  device_info_plus: ^9.1.2
-
-  package_info_plus: ^5.0.1
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -107,11 +103,20 @@ flutter_launcher_icons:
 
 flutter_native_splash:
   color: "#f6f2e8"
+  color_dark : "#f6f2e8"
   image: assets/icon/icon.png
+  image_dark: assets/icon/icon.png
   icon_background_color: "#f6f2e8"
   android: true
   ios: true
   web: false
+
+  android_12:
+    color: "#f6f2e8"
+    color_dark: "#f6f2e8"
+    image: assets/icon/icon.png
+    image_dark: assets/icon/icon.png
+    icon_background_color: "#f6f2e8"
 
 # The following section is specific to Flutter packages.
 flutter:

@@ -66,11 +66,11 @@ class _AddReminderState extends State<AddReminder> {
         DateFormat format;
         var date;
         if(_timeControler.text.isEmpty) {
-          format = new DateFormat("dd-MM-yyyy");
+          format = DateFormat("dd-MM-yyyy");
           date = format.parse(_dateControler.text);
         }
         else {
-          format = new DateFormat("dd-MM-yyyy hh:mm");
+          format = DateFormat("dd-MM-yyyy hh:mm");
           date = format.parse("${_dateControler.text} ${_timeControler.text}");}
 
           var reminde = Reminder(_titleControler.text, date, _descControler.text);
@@ -78,7 +78,9 @@ class _AddReminderState extends State<AddReminder> {
         }
       }
 
-    else Fluttertoast.showToast(msg: "not val");
+    else {
+      Fluttertoast.showToast(msg: "not val");
+    }
 
 
   }
@@ -145,9 +147,6 @@ class _AddReminderState extends State<AddReminder> {
     if (reminder.toString().isNotEmpty && reminder != null){
       _titleControler.text = reminder.title;
       _dateControler.text = reminder.date.toString();
-      if (reminder.time !=null) {
-        _timeControler.text = reminder.time.toString();
-      }
 
     }
     return Scaffold(

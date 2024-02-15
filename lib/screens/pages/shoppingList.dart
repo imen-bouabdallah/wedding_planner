@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wedding_planner/classes/Helpers.dart';
 import 'package:wedding_planner/classes/ShopItem.dart';
 import 'package:wedding_planner/style/Theme.dart';
+import 'package:wedding_planner/utils/Dialogs.dart';
 
 
 class Shopping extends StatefulWidget {
@@ -28,6 +29,10 @@ class _ShoppingState extends State<Shopping> {
 
   Widget _shopItem(ShopItem item, int index){
     return ListTile(
+      onLongPress: (){
+        confirmDelete(context, item, "ShopItems");
+      },
+      tileColor: item.bought ? maize : null,
       title: Text(item.name, style: const TextStyle(fontSize: 20),),
       subtitle: Row(
         children: [
@@ -87,7 +92,7 @@ class _ShoppingState extends State<Shopping> {
               children: [
                 TextField(
                   controller: _itemController,
-                  textCapitalization: TextCapitalization.words,
+                  textCapitalization: TextCapitalization.sentences,
                   decoration: InputDecoration(
                     hintText: 'Purchased item',
                     errorText: _validateItem ? "Value Can't Be Empty" : null,),
@@ -278,7 +283,7 @@ class _ShoppingState extends State<Shopping> {
                 else if(snapshot.hasError){
                   print(snapshot.error.toString());
                 }
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               },
 
             ),

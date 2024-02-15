@@ -59,24 +59,52 @@ class _DetailedListState extends State<DetailedList> {
         padding: const EdgeInsets.fromLTRB(5, 20, 5, 5),
         child: Column(
           children: [
-            Table(border: TableBorder.all(width: 2, color: Colors.black38),
-                columnWidths: const <int, TableColumnWidth>{
-                  0: FlexColumnWidth(45),
-                  1: FlexColumnWidth(27),
-                  2: FlexColumnWidth(28)
-                },
-                children:  [
-                  TableRow(
-                      children: [
-                        Align(alignment: Alignment.centerRight,child: Text("Total  ", style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: gold),
-                        )),
-                        const Center(child: Text("55", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,),
-                        )),
-                        const Center(child: Text("77", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,),
-                        )),
-                      ]),
-                ]),
+            FutureBuilder(
+              future: getAllGuest(),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if(snapshot.hasData) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+
+                    num men = 0, women = 0;
+                    for(var guest in snapshot.data){
+                      men = men + guest.menNumber;
+                      women += guest.womenNumber;
+                    }
+                    return Table(
+                        border: TableBorder.all(width: 2, color: Colors.black38),
+                        columnWidths: const <int, TableColumnWidth>{
+                          0: FlexColumnWidth(45),
+                          1: FlexColumnWidth(27),
+                          2: FlexColumnWidth(28)
+                        },
+                        children: [
+                          TableRow(
+                              children: [
+                                Align(alignment: Alignment.centerRight,
+                                    child: Text("Total  ", style:
+                                    TextStyle(fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                        color: gold),
+                                    )),
+                                 Center(child: Text("$men", style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20,),
+                                )),
+                                Center(child: Text("$women", style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20,),
+                                )),
+                              ]),
+                        ]);
+                  }
+                }
+                else if(snapshot.hasError){
+                  return Text(snapshot.error.toString());
+                }
+                else {
+                  return const CircularProgressIndicator();
+                }
+                return const SizedBox();
+              },
+            ),
             const SizedBox(height: 10,),
             Table(
               border: TableBorder.all(width: 2, color: Colors.black38),

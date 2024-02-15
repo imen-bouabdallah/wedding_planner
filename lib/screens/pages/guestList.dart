@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wedding_planner/classes/Helpers.dart';
 import 'package:wedding_planner/classes/Guest.dart';
 import 'package:wedding_planner/screens/pages/detailedGuestList.dart';
 import 'package:wedding_planner/style/Theme.dart';
 import 'package:wedding_planner/screens/addGuest.dart';
+import 'package:wedding_planner/utils/Dialogs.dart';
+import 'package:wedding_planner/utils/Menus.dart';
 
 class Guest_list extends StatefulWidget {
   const Guest_list({super.key});
@@ -25,11 +26,14 @@ class _Guest_listState extends State<Guest_list> {
 
   List guestList = [];
 
+  late int sort;
+
 
   @override
   void initState() {
      super.initState();
      _streamGuestList = _refGuestList.snapshots();
+     sort =0;
 
   }
 
@@ -50,9 +54,44 @@ class _Guest_listState extends State<Guest_list> {
         shadowColor: Theme.of(context).shadowColor,
         scrolledUnderElevation: 4.0,
         actions: [
-          IconButton(
+          /*IconButton(
               onPressed: (){},
-              icon: const Icon(Icons.search)),
+              icon: const Icon(Icons.search)),*/
+          PopupMenuButton(
+            icon: const Icon(Icons.sort) ,
+            itemBuilder: (context) =>
+            <PopupMenuEntry>[
+              PopupMenuItem(
+                  onTap: (){
+                    setState(() {
+                      sort = 1;
+                    });
+                  },
+                  child: const Text('Sort A to Z', style: TextStyle(color: Colors.white),)),
+              PopupMenuItem(
+                  onTap: (){
+                    setState(() {
+                      sort = 2;
+                    });
+                  },
+                  child: const Text('Sort Z to A', style: TextStyle(color: Colors.white),)),
+              PopupMenuItem(
+                  onTap: (){
+                    setState(() {
+                      sort = 3;
+                    });
+                  },
+                  child: const Text('Invited', style: TextStyle(color: Colors.white),)),
+              PopupMenuItem(
+                  onTap: (){
+                    setState(() {
+                      sort = 4;
+                    });
+                  },
+                  child: const Text('Non-Invited', style: TextStyle(color: Colors.white),)),
+            ],
+          ),
+
           IconButton(
               onPressed: (){
                 Navigator.push(
@@ -61,7 +100,7 @@ class _Guest_listState extends State<Guest_list> {
                 );
               },
 
-              icon: const Icon(Icons.info_outline) ),
+              icon: const Icon(Icons.list_alt) ),
         ],
       ),
 
@@ -72,32 +111,7 @@ class _Guest_listState extends State<Guest_list> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-
-              PopupMenuButton(
-                //icon: const Icon(Icons.email),
-                  child: Row(
-                    children: [
-                      Text('Send an invitation', style: TextStyle(color: gold, fontSize: 20),),
-                      const SizedBox(width: 4,),
-                      Icon(Icons.email, color: gold,),
-                      const SizedBox(width: 10,),
-                    ],
-                  ),
-
-                  //choose picture
-                  itemBuilder: (context)=> <PopupMenuEntry>[
-
-                    PopupMenuItem(
-                        child: TextButton(
-                            onPressed: (){Navigator.pop(context); _onShareXFileFromAssets(context, 'invite/invitation_ar.png');},
-                            child: const Text('Arabic Invitation'))),
-                    PopupMenuItem(
-                        child: TextButton(
-                            onPressed: (){Navigator.pop(context); _onShareXFileFromAssets(context, 'invite/invitation_fr.png');},
-                            child: const Text('French invitation'))),
-                  ],
-
-              ),
+              inviteMenu(),
             ]
           ),
 
@@ -110,9 +124,38 @@ class _Guest_listState extends State<Guest_list> {
                 }
                 else if(snapshot.connectionState == ConnectionState.active){
                   guestList = getGuests(snapshot);
-                  guestList.sort((a, b) {
-                    return a.name.toLowerCase().compareTo(b.name.toLowerCase());
-                  });
+
+                  switch(sort){
+                    case 1:
+                      guestList.sort((a, b) {
+                        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+                      });
+                      break;
+                    case 2:
+                      guestList.sort((a, b) {
+                        return b.name.toLowerCase().compareTo(a.name.toLowerCase());
+                      });
+                      break;
+                    case 3:
+                      guestList.sort((a, b)  {
+                        if(b.isInvited) {
+                          return 1;
+                        }
+                        return -1;
+                      });
+                      break;
+                    case 4:
+                      guestList.sort((a, b)  {
+                        if(a.isInvited) {
+                          return 1;
+                        }
+                        return -1;
+                      });
+                      break;
+                    default:
+                      break;
+                  }
+
                   return  Expanded(
                     flex: 5,
                     child: ListView.separated(
@@ -151,7 +194,7 @@ class _Guest_listState extends State<Guest_list> {
     return query.docs.map((e) => Guest.fromSnapshot(e as DocumentSnapshot<Map<String, dynamic>>)).toList();
   }
 
-  Future addPhoneNumber(context){
+  Future addPhoneNumber(context, guest){
     return showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -187,10 +230,10 @@ class _Guest_listState extends State<Guest_list> {
             ),
             FilledButton(
               onPressed: () {
-                setState(() {
-                  //guest_list[index].phoneNumber = _phoneNumberController.text.toString();
+                  guest.phoneNumber = _phoneNumberController.text;
+                  updateGuest(guest);
                   _phoneNumberController.clear();
-                });
+
                 Navigator.pop(context);
               },
               child: const Text('Save'),
@@ -230,7 +273,7 @@ class _Guest_listState extends State<Guest_list> {
                 : // if phone number not available
             IconButton(
                 onPressed: (){
-
+                  addPhoneNumber(context, guest);
                 },
                 icon: const Icon(Icons.add_call)),
             PopupMenuButton(
@@ -269,39 +312,5 @@ class _Guest_listState extends State<Guest_list> {
     );
   }
 
-  void _onShareXFileFromAssets(BuildContext context, String file) async {
-    final box = context.findRenderObject() as RenderBox?;
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final data = await rootBundle.load('assets/$file');
-    final buffer = data.buffer;
-    final shareResult = await Share.shareXFiles(
-      [
-        XFile.fromData(
-          buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
-          name: file,
-          mimeType: 'image/png',
-        ),
-      ],
-      sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-    );
 
-    scaffoldMessenger.showSnackBar(getResultSnackBar(shareResult));
-  }
-
-  SnackBar getResultSnackBar(ShareResult result) {
-    return SnackBar(
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-
-          //Text("Share result: ${result.status}"),
-          if (result.status == ShareResultStatus.success)
-           const Text("Invitation is shared!")
-          else
-            const Text("Failed to share")
-        ],
-      ),
-    );
-  }
 }

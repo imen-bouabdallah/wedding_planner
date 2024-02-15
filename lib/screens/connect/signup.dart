@@ -4,7 +4,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:wedding_planner/classes/Account.dart';
 import 'package:wedding_planner/classes/Helpers.dart';
-import 'package:wedding_planner/classes/User.dart';
 import 'package:wedding_planner/style/Theme.dart';
 
 class SignupPage extends StatefulWidget {
@@ -49,14 +48,14 @@ class _SignupPageState extends State<SignupPage> {
         child: Column(
           children:[
             const SizedBox(height: 30,),
-            FadeInUp(duration: Duration(milliseconds: 1000),
+            FadeInUp(duration: const Duration(milliseconds: 1000),
                 child: Text("Sign up", style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
                     color: gold
                 ),)),
             const SizedBox(height: 20,),
-            FadeInUp(duration: Duration(milliseconds: 1200), child: Text("Create an account, It's free", style: TextStyle(
+            FadeInUp(duration: const Duration(milliseconds: 1200), child: Text("Create an account, It's free", style: TextStyle(
                 fontSize: 15,
                 color: Colors.grey[700]
             ),)),
@@ -160,13 +159,13 @@ class _SignupPageState extends State<SignupPage> {
             FadeInUp(duration: const Duration(milliseconds: 1600),
                 child: RichText(
                   text: TextSpan(
-                    style: TextStyle(color: Colors.black, fontSize: 15),
+                    style: const TextStyle(color: Colors.black, fontSize: 15),
                       text: "Already have an account? ",
                       children: [
                         TextSpan(
                           recognizer: TapGestureRecognizer()..onTap = ()=> Navigator.pop(context),
                           text: ' Log In',
-                          style: TextStyle(decoration: TextDecoration.underline)
+                          style: const TextStyle(decoration: TextDecoration.underline)
                         )
                       ]
                     )
@@ -202,7 +201,7 @@ class _SignupPageState extends State<SignupPage> {
             ),
           ),
         ),
-        SizedBox(height: 30,),
+        const SizedBox(height: 30,),
       ],
     );
   }

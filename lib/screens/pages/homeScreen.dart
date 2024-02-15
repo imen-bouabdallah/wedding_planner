@@ -5,12 +5,13 @@ import 'package:flutter_exit_app/flutter_exit_app.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wedding_planner/classes/Helpers.dart';
-import 'package:wedding_planner/screens/pages/Settings.dart';
 import 'package:wedding_planner/screens/pages/guestList.dart';
 import 'package:wedding_planner/screens/pages/reminderList.dart';
 import 'package:wedding_planner/screens/pages/shoppingList.dart';
 import 'package:wedding_planner/screens/pages/todoList.dart';
 import 'package:wedding_planner/style/Theme.dart';
+import 'package:wedding_planner/utils/Dialogs.dart';
+import 'package:wedding_planner/utils/Menus.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime date =  DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour);
   DateTime weddingDate = DateTime.utc(2024, DateTime.july, 6, 0);
   int CurrentButton= 0; //for bottom navigation bar -- current selected button
+  late String dateId;
 
 
 
@@ -46,17 +48,87 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Wedding Planer"),
-          automaticallyImplyLeading: false,
+          //automaticallyImplyLeading: false,
           actions: [
-            IconButton(onPressed: (){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const settings()),
-              );
-            }, icon: const Icon(Icons.settings)),
-          IconButton(onPressed: (){
+           IconButton(onPressed: (){
             confirmLogout(context);
           }, icon: const Icon(Icons.logout)),
+          ],
+        ),
+        drawer: NavigationDrawer(
+          children:  [
+            SafeArea(child:
+             DrawerHeader(
+                decoration: BoxDecoration(
+                  color: gold
+                ),
+                child :
+                const Stack(
+                  children: [ Positioned(
+                    bottom: 8.0,
+                    left: 4.0,
+                    child:  Text("Options", style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold
+                    ),),
+                  ),]
+                ),
+             )),
+
+            TextButton(onPressed:(){
+              updateWeddingDate(context, dateId);
+            },
+                child: const Row(
+                  children: [
+                    Icon(Icons.date_range_outlined, color: Colors.black,),
+                    SizedBox(width: 10,),
+                    Text("Change wedding date",
+                      style: TextStyle(
+                          color: Colors.black
+                      ),),
+                  ],
+                )
+            ),
+            TextButton(onPressed: (){
+              sendInvite(context);
+            },
+                child: const Row(
+                  children: [
+                    Icon(Icons.link, color: Colors.black,),
+                    SizedBox(width: 10,),
+                    Text("Share event  ",
+                      style: TextStyle(
+                          color: Colors.black
+                      ),),
+
+                  ],
+                )),
+            Divider(color: gold),
+            TextButton(
+                onPressed: (){},
+                child: const Row(
+                  children: [
+                    Icon(Icons.delete_forever,
+                      color: Colors.red),
+                    SizedBox(width: 10,),
+                    Text("Delete event  ",
+                      style: TextStyle(
+                          color: Colors.red
+                      ),),
+
+                  ],
+                )
+            ),
+            TextButton(
+                onPressed: (){confirmLogout(context);},
+                child: const Row(
+                  children: [
+                    Icon(Icons.logout,color: Colors.black,),
+                    SizedBox(width: 10,),
+                    Text("Logout ", style: TextStyle(color: Colors.black),),
+                  ],
+                )
+            ),
           ],
         ),
       
@@ -74,66 +146,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: platinum
                   ),
       
-                  child: Column(
-                    children: [
-                      TableCalendar(
-                        firstDay: DateTime.utc(weddingDate.year, weddingDate.month, 1),
-                        lastDay: DateTime.utc(weddingDate.year, weddingDate.month+1, 1),
-                        focusedDay: weddingDate,
-                        currentDay: weddingDate,
-                        pageAnimationEnabled: false,
-                        headerStyle: const HeaderStyle(
-                            formatButtonVisible: false,
-                            leftChevronVisible: false,
-                            rightChevronVisible: false
-                        ),
-                        calendarStyle: CalendarStyle(
-                            todayDecoration: BoxDecoration(
-                                color: gold,
-                                shape: BoxShape.circle
-                            )
-                        ),
-                      ),
-      
-                      /*Image.asset('assets/invite/invitation_fr.png',
-                      fit: BoxFit.cover,
-                        width: double.infinity,
-                      ),*/
-                      Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(),
-                            borderRadius: BorderRadius.circular(10),
-                            color: goldAccent
-                        ),
-                        padding: const EdgeInsets.all(3),
-                        child: CountDownText(
-                          due: weddingDate,
-                          finishedText: "Done",
-                          showLabel: true,
-                          longDateName: true,
-                          daysTextLong: " DAYS ",
-                          hoursTextLong: " HOURS ",
-                          minutesTextLong: " MINUTES ",
-                          secondsTextLong: " SECONDS ",
-                          style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold
-                          ),
-      
-                        ),
-                      ),
-                      const SizedBox(height: 4,)
-      
-                    ],
-                  ),
-      
+                  child: weddingDatePreview(),
+
                 ),
               ),
               const SizedBox(height: 15,),
               UnconstrainedBox(
                 child: Container(
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.black)
@@ -170,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-      bottomNavigationBar: NavigationBar(
+        bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {
             CurrentButton = index;
@@ -236,6 +256,79 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  weddingDatePreview(){
+    return StreamBuilder(
+        stream: FirebaseFirestore
+        .instance
+        .collection('Date')
+        .snapshots(),
+    builder: (context, snapshot)  {
+    if(snapshot.hasData){
+
+    if(snapshot.connectionState == ConnectionState.active){
+      var stamp = snapshot.data!.docs.map((e) => Date.fromSnapshot(e)).toList();
+      dateId = stamp[0].id;
+      weddingDate =  stamp[0].date;
+      return Column(
+          children: [
+            TableCalendar(
+              firstDay: DateTime.utc(weddingDate.year, weddingDate.month, 1),
+              lastDay: DateTime.utc(weddingDate.year, weddingDate.month+1, 1),
+              focusedDay: weddingDate,
+              currentDay: weddingDate,
+              pageAnimationEnabled: false,
+              headerStyle: const HeaderStyle(
+                  formatButtonVisible: false,
+                  leftChevronVisible: false,
+                  rightChevronVisible: false
+              ),
+              calendarStyle: CalendarStyle(
+                  todayDecoration: BoxDecoration(
+                      color: gold,
+                      shape: BoxShape.circle
+                  )
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  border: Border.all(),
+                  borderRadius: BorderRadius.circular(10),
+                  color: goldAccent
+              ),
+              padding: const EdgeInsets.all(3),
+              child: CountDownText(
+                due: weddingDate,
+                finishedText: "Done",
+                showLabel: true,
+                longDateName: true,
+                daysTextLong: " DAYS ",
+                hoursTextLong: " HOURS ",
+                minutesTextLong: " MINUTES ",
+                secondsTextLong: " SECONDS ",
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold
+                ),
+
+              ),
+            ),
+            const SizedBox(height: 4,)
+
+          ]
+      )    ;
+    }
+    else if (snapshot.hasError){
+      return Center(child: Text(snapshot.error.toString()),);
+    }
+    }
+    return const Center(child: Text("Connection problem"),);
+    });
+
+
+  }
+
 
 
 }

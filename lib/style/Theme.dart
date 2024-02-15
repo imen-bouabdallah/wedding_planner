@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Color gold = const Color(0xFFB79347); //buttobs
 Color goldAccent = const Color(0xFFDDD3C1);//overlay
@@ -11,10 +10,8 @@ Color green_ = const Color(0xFF77AF9C);
 Color darkGreen = const Color(0xFF7A9E7E);
 Color maize = const Color(0xFFD4C685);
 
-final appThemeProvider = StateProvider<bool>((ref) => false);
 
-ThemeData getAppTheme(BuildContext context, bool isDarkTheme) {
-  return ThemeData(
+ThemeData myTheme = ThemeData(
       useMaterial3: true,
       primaryColor: gold,
       hintColor: dimGrey,
@@ -35,6 +32,12 @@ ThemeData getAppTheme(BuildContext context, bool isDarkTheme) {
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: dun,
         indicatorColor: gold,
+
+      ),
+
+      navigationDrawerTheme: NavigationDrawerThemeData(
+        backgroundColor: dun,
+        indicatorColor: goldAccent,
 
       ),
 
@@ -155,4 +158,3 @@ ThemeData getAppTheme(BuildContext context, bool isDarkTheme) {
     ),
 
   );
-}

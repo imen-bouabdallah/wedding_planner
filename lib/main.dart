@@ -11,7 +11,12 @@ import 'package:wedding_planner/screens/pages/homeScreen.dart';
 import 'package:wedding_planner/style/Theme.dart';
 
 
+
+
 Future main() async{
+
+
+  ///firebase initialisation
   WidgetsFlutterBinding.ensureInitialized();
   try {
       await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -30,20 +35,25 @@ Map<String, WidgetBuilder> routes = {
   "/addReminder": (context) => const AddReminder(),
   "/addGuest" : (context)=> const AddGuest(),
   "/login" : (context)=> const Login(),
-  "/signup" : (context)=> SignupPage(),
+  "/signup" : (context)=> const SignupPage(),
 };
 
-class MyApp extends ConsumerWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+
+
+
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Wedding planner',
-      theme: getAppTheme(context, ref.watch(appThemeProvider)),
+      theme: myTheme,
       debugShowCheckedModeBanner: false,
       routes: routes,
       initialRoute: '/login',
+
     );
   }
 }
