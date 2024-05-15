@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:wedding_planner/classes/Helpers.dart';
+import 'package:wedding_planner/utils/DBHelpers.dart';
 import 'package:wedding_planner/classes/ShopItem.dart';
 import 'package:wedding_planner/style/Theme.dart';
 import 'package:wedding_planner/utils/Dialogs.dart';

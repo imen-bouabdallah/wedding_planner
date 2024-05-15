@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:wedding_planner/classes/Helpers.dart';
+import 'package:wedding_planner/utils/DBHelpers.dart';
 import 'package:wedding_planner/classes/Reminder.dart';
 import 'package:wedding_planner/screens/addReminder.dart';
 import 'package:wedding_planner/style/Theme.dart';

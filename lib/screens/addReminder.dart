@@ -2,7 +2,7 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:wedding_planner/classes/Helpers.dart';
+import 'package:wedding_planner/utils/DBHelpers.dart';
 import 'package:wedding_planner/classes/Reminder.dart';
 import 'package:wedding_planner/style/Theme.dart';
 

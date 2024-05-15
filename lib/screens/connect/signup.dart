@@ -3,7 +3,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:wedding_planner/classes/Account.dart';
-import 'package:wedding_planner/classes/Helpers.dart';
+import 'package:wedding_planner/utils/DBHelpers.dart';
 import 'package:wedding_planner/style/Theme.dart';
 
 class SignupPage extends StatefulWidget {

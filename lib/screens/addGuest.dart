@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wedding_planner/classes/Guest.dart';
+import 'package:wedding_planner/utils/DBHelpers.dart';
 
 class AddGuest extends StatefulWidget {
   const AddGuest({super.key});
@@ -70,13 +72,34 @@ class _AddGuestState extends State<AddGuest> {
 
               ),
               const SizedBox(height: 10,),
-              TextField(
-                controller: _phoneNumberController,
-                keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Phone Number (optional)',
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _phoneNumberController,
+                      keyboardType: TextInputType.phone,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Phone Number (optional)',
+                      ),
+                    ),
+                  ),
+                  IconButton(onPressed: () async {
+                    bool permission = await FlutterContactPicker.requestPermission();
+                    if(permission){
+                      if(await FlutterContactPicker.hasPermission()) {
+                    final contact =
+                    await FlutterContactPicker.pickPhoneContact();
+                    if(contact.phoneNumber!.number!.isNotEmpty){
+                    _phoneNumberController.text = contact.phoneNumber!.number!.toString();
+                    }
+                    else{
+                    Fluttertoast.showToast(msg: "contact empty");
+                    }
+                    }
+                  }
+                  }, icon: Icon(Icons.add_call))
+                ],
               ),
               const SizedBox(height: 10,),
 
@@ -157,14 +180,7 @@ class _AddGuestState extends State<AddGuest> {
 
                         if(guest==null){ //save
                           //create a new one
-                          db.add(newGuest.toJson()).whenComplete(
-                                  (){
-                                Fluttertoast.showToast(msg: "new guest saved successfully");
-                                Navigator.pop(context);
-                              }
-                          ).catchError((error, stackTrace){
-                            Fluttertoast.showToast(msg: "Error, something went wrong please try again");
-                          });
+                          createGuest(newGuest, context);
                         }
                         else { //edit
                           db

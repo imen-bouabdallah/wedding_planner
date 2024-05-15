@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:wedding_planner/classes/Helpers.dart';
+import 'package:wedding_planner/utils/DBHelpers.dart';
 import 'package:wedding_planner/screens/connect/login.dart';
 import 'package:wedding_planner/style/Theme.dart';
 import 'package:wedding_planner/utils/Menus.dart';

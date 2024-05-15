@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_exit_app/flutter_exit_app.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:wedding_planner/classes/Helpers.dart';
+import 'package:wedding_planner/utils/DBHelpers.dart';
 import 'package:wedding_planner/screens/pages/guestList.dart';
 import 'package:wedding_planner/screens/pages/reminderList.dart';
 import 'package:wedding_planner/screens/pages/shoppingList.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wedding_planner/classes/Guest.dart';
-import 'package:wedding_planner/classes/Helpers.dart';
+import 'package:wedding_planner/utils/DBHelpers.dart';
 import 'package:wedding_planner/style/Theme.dart';
 
 
@@ -29,23 +29,35 @@ class _DetailedListState extends State<DetailedList> {
   getFamilyGuest() async{
     final snapshot = await db_guest.where('type', isEqualTo: 'Family').get();
     FamilyList = snapshot.docs.map((e) => Guest.fromSnapshot(e)).toList();
+    FamilyList.sort((a, b) {
+      return a.name.trim().toLowerCase().compareTo(b.name.trim().toLowerCase());
+    });
     return snapshot;
   }
 
   getNeighborsGuest() async{
     final snapshot = await db_guest.where('type', isEqualTo: 'Neighbors').get();
     NeighborsList = snapshot.docs.map((e) => Guest.fromSnapshot(e)).toList();
+    NeighborsList.sort((a, b) {
+      return a.name.trim().toLowerCase().compareTo(b.name.trim().toLowerCase());
+    });
     return snapshot;
   }
   getFriendsGuest() async{
     final snapshot = await db_guest.where('type', isEqualTo: 'Friends').get();
     FriendsList = snapshot.docs.map((e) => Guest.fromSnapshot(e)).toList();
+    FriendsList.sort((a, b) {
+      return a.name.trim().toLowerCase().compareTo(b.name.trim().toLowerCase());
+    });
     return snapshot;
   }
 
   getOthersGuest() async{
     final snapshot = await db_guest.where('type', isEqualTo: 'Others').get();
     OthersList = snapshot.docs.map((e) => Guest.fromSnapshot(e)).toList();
+    OthersList.sort((a, b) {
+      return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+    });
     return snapshot;
   }
 

@@ -8,7 +8,7 @@ import 'package:wedding_planner/classes/Reminder.dart';
 import 'package:wedding_planner/classes/ToDo_item.dart';
 import 'package:wedding_planner/classes/ShopItem.dart';
 import 'package:wedding_planner/classes/User.dart';
-import 'Account.dart';
+import '../classes/Account.dart';
 
 
 ///SignIn methods
@@ -99,6 +99,31 @@ Future<List<Guest>> getAllGuest() async{
   final snapshot = await db_guest.get();
   final guestData = snapshot.docs.map((e) => Guest.fromSnapshot(e)).toList();
   return guestData;
+}
+
+createGuest(Guest guest, context) async {
+  //check if the guest doesn't exist already
+  await db_guest
+      .where("name", isEqualTo: guest.name)
+      .get().then(
+          (value) {
+            if(value.docs.isEmpty) saveGuest(guest, context);
+            else Fluttertoast.showToast(msg: "Guest exists already");
+          }).onError((error, stackTrace) {
+            saveGuest(guest, context);
+          }
+    ).catchError((error, stackTrace){
+      Fluttertoast.showToast(msg: "Error, something went wrong please try again");
+    });
+
+}
+
+saveGuest(Guest guest, context){
+  db_guest.add(guest.toJson()).whenComplete(
+          (){
+        Fluttertoast.showToast(msg: "new guest saved successfully");
+        Navigator.pop(context);
+      });
 }
 
 updateGuest(Guest guest){
