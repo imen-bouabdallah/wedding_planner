@@ -2,15 +2,8 @@
 
 A personal Flutter project.
 
-## Getting Started
+A planner to manage the date and task between the users
+While also keeping track of guest list (who's been invited and who's not)
+It also includes sending invitation by uploading a picture of the invite 
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Uploqding screenshots -- TODO
