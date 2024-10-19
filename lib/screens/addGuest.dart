@@ -147,6 +147,11 @@ class _AddGuestState extends State<AddGuest> {
                     dropdownMenuEntries: const [
                       DropdownMenuEntry(value: 'Family', label: 'Family'),
                       DropdownMenuEntry(value: 'Friends', label: 'Friends'),
+                      DropdownMenuEntry(value: 'Friends Kais', label: 'Friends Kais'),
+                      DropdownMenuEntry(value: 'Friends Ahmed', label: 'Friends Ahmed'),
+                      DropdownMenuEntry(value: 'Friends Amine', label: 'Friends Amine'),
+                      DropdownMenuEntry(value: 'Friends Imen', label: 'Friends Imen'),
+                      DropdownMenuEntry(value: 'Friends Khaled', label: 'Friends Khaled'),
                       DropdownMenuEntry(value: 'Neighbors', label: 'Neighbors'),
                       DropdownMenuEntry(value: 'Others', label: 'Others'),],
 

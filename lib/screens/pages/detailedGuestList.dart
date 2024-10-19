@@ -52,6 +52,51 @@ class _DetailedListState extends State<DetailedList> {
     return snapshot;
   }
 
+  getFriendsKaisGuest() async{
+    final snapshot = await db_guest.where('type', isEqualTo: 'Friends Kais').get();
+    FriendsList = snapshot.docs.map((e) => Guest.fromSnapshot(e)).toList();
+    FriendsList.sort((a, b) {
+      return a.name.trim().toLowerCase().compareTo(b.name.trim().toLowerCase());
+    });
+    return snapshot;
+  }
+
+  getFriendsAhmedGuest() async{
+    final snapshot = await db_guest.where('type', isEqualTo: 'Friends Ahmed').get();
+    FriendsList = snapshot.docs.map((e) => Guest.fromSnapshot(e)).toList();
+    FriendsList.sort((a, b) {
+      return a.name.trim().toLowerCase().compareTo(b.name.trim().toLowerCase());
+    });
+    return snapshot;
+  }
+
+  getFriendsAmineGuest() async{
+    final snapshot = await db_guest.where('type', isEqualTo: 'Friends Amine').get();
+    FriendsList = snapshot.docs.map((e) => Guest.fromSnapshot(e)).toList();
+    FriendsList.sort((a, b) {
+      return a.name.trim().toLowerCase().compareTo(b.name.trim().toLowerCase());
+    });
+    return snapshot;
+  }
+
+  getFriendsImenGuest() async{
+    final snapshot = await db_guest.where('type', isEqualTo: 'Friends Imen').get();
+    FriendsList = snapshot.docs.map((e) => Guest.fromSnapshot(e)).toList();
+    FriendsList.sort((a, b) {
+      return a.name.trim().toLowerCase().compareTo(b.name.trim().toLowerCase());
+    });
+    return snapshot;
+  }
+
+  getFriendsKhaledGuest() async{
+    final snapshot = await db_guest.where('type', isEqualTo: 'Friends Khaled').get();
+    FriendsList = snapshot.docs.map((e) => Guest.fromSnapshot(e)).toList();
+    FriendsList.sort((a, b) {
+      return a.name.trim().toLowerCase().compareTo(b.name.trim().toLowerCase());
+    });
+    return snapshot;
+  }
+
   getOthersGuest() async{
     final snapshot = await db_guest.where('type', isEqualTo: 'Others').get();
     OthersList = snapshot.docs.map((e) => Guest.fromSnapshot(e)).toList();
@@ -77,11 +122,13 @@ class _DetailedListState extends State<DetailedList> {
                 if(snapshot.hasData) {
                   if (snapshot.connectionState == ConnectionState.done) {
 
-                    num men = 0, women = 0;
+                    num men = 0, women = 0, total = 0;
                     for(var guest in snapshot.data){
                       men = men + guest.menNumber;
                       women += guest.womenNumber;
+
                     }
+                    total = men + women;
                     return Table(
                         border: TableBorder.all(width: 2, color: Colors.black38),
                         columnWidths: const <int, TableColumnWidth>{
@@ -92,12 +139,21 @@ class _DetailedListState extends State<DetailedList> {
                         children: [
                           TableRow(
                               children: [
+
                                 Align(alignment: Alignment.centerRight,
-                                    child: Text("Total  ", style:
-                                    TextStyle(fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                        color: gold),
-                                    )),
+                                    child: Row(
+                                      children: [
+                                        Text("Total  ", style:
+                                        TextStyle(fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                            color: gold),
+                                        ),
+                                        Text("$total", style: const TextStyle(
+                                          fontWeight: FontWeight.bold, fontSize: 20,),
+                                        )
+                                      ],
+                                    )
+                                ),
                                  Center(child: Text("$men", style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 20,),
                                 )),
@@ -206,7 +262,7 @@ class _DetailedListState extends State<DetailedList> {
                         children: [
                           TableRow(
                               children: const [
-                                Center(child: Text("Friends", style:  TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),),)
+                                Center(child: Text("Friends Kais", style:  TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),),)
                               ],
                               decoration: BoxDecoration(
                                 color: maize,
@@ -215,7 +271,167 @@ class _DetailedListState extends State<DetailedList> {
                         ],
                       ),
                       FutureBuilder(
-                        future: getFriendsGuest(),
+                        future: getFriendsKaisGuest(),
+                        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                          if(snapshot.hasData){
+                            if(snapshot.connectionState == ConnectionState.done){
+                              return Table(
+                                  border: TableBorder.all(width: 2, color: Colors.black38),
+                                  columnWidths: const <int, TableColumnWidth>{
+                                    0: FlexColumnWidth(45),
+                                    1: FlexColumnWidth(27),
+                                    2: FlexColumnWidth(28)
+                                  },
+                                  children: FriendsList.map((e) {
+                                    return _buildGuestDetails(e);
+                                  }).toList()
+                              );
+                            }
+                          }
+                          else if(snapshot.hasError){
+                            return Text(snapshot.error.toString());
+                          }
+                          else {
+                            return const CircularProgressIndicator();
+                          }
+                          return const SizedBox();
+                        },
+
+                      ),
+                      Table(
+                        children: [
+                          TableRow(
+                              children: const [
+                                Center(child: Text("Friends Ahmed", style:  TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),),)
+                              ],
+                              decoration: BoxDecoration(
+                                color: maize,
+                              )
+                          ),
+                        ],
+                      ),
+                      FutureBuilder(
+                        future: getFriendsAhmedGuest(),
+                        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                          if(snapshot.hasData){
+                            if(snapshot.connectionState == ConnectionState.done){
+                              return Table(
+                                  border: TableBorder.all(width: 2, color: Colors.black38),
+                                  columnWidths: const <int, TableColumnWidth>{
+                                    0: FlexColumnWidth(45),
+                                    1: FlexColumnWidth(27),
+                                    2: FlexColumnWidth(28)
+                                  },
+                                  children: FriendsList.map((e) {
+                                    return _buildGuestDetails(e);
+                                  }).toList()
+                              );
+                            }
+                          }
+                          else if(snapshot.hasError){
+                            return Text(snapshot.error.toString());
+                          }
+                          else {
+                            return const CircularProgressIndicator();
+                          }
+                          return const SizedBox();
+                        },
+
+                      ),
+                      Table(
+                        children: [
+                          TableRow(
+                              children: const [
+                                Center(child: Text("Friends Amine", style:  TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),),)
+                              ],
+                              decoration: BoxDecoration(
+                                color: maize,
+                              )
+                          ),
+                        ],
+                      ),
+                      FutureBuilder(
+                        future: getFriendsAmineGuest(),
+                        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                          if(snapshot.hasData){
+                            if(snapshot.connectionState == ConnectionState.done){
+                              return Table(
+                                  border: TableBorder.all(width: 2, color: Colors.black38),
+                                  columnWidths: const <int, TableColumnWidth>{
+                                    0: FlexColumnWidth(45),
+                                    1: FlexColumnWidth(27),
+                                    2: FlexColumnWidth(28)
+                                  },
+                                  children: FriendsList.map((e) {
+                                    return _buildGuestDetails(e);
+                                  }).toList()
+                              );
+                            }
+                          }
+                          else if(snapshot.hasError){
+                            return Text(snapshot.error.toString());
+                          }
+                          else {
+                            return const CircularProgressIndicator();
+                          }
+                          return const SizedBox();
+                        },
+
+                      ),
+                      Table(
+                        children: [
+                          TableRow(
+                              children: const [
+                                Center(child: Text("Friends Imen", style:  TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),),)
+                              ],
+                              decoration: BoxDecoration(
+                                color: maize,
+                              )
+                          ),
+                        ],
+                      ),
+                      FutureBuilder(
+                        future: getFriendsImenGuest(),
+                        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                          if(snapshot.hasData){
+                            if(snapshot.connectionState == ConnectionState.done){
+                              return Table(
+                                  border: TableBorder.all(width: 2, color: Colors.black38),
+                                  columnWidths: const <int, TableColumnWidth>{
+                                    0: FlexColumnWidth(45),
+                                    1: FlexColumnWidth(27),
+                                    2: FlexColumnWidth(28)
+                                  },
+                                  children: FriendsList.map((e) {
+                                    return _buildGuestDetails(e);
+                                  }).toList()
+                              );
+                            }
+                          }
+                          else if(snapshot.hasError){
+                            return Text(snapshot.error.toString());
+                          }
+                          else {
+                            return const CircularProgressIndicator();
+                          }
+                          return const SizedBox();
+                        },
+
+                      ),
+                      Table(
+                        children: [
+                          TableRow(
+                              children: const [
+                                Center(child: Text("Friends Khaled", style:  TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),),)
+                              ],
+                              decoration: BoxDecoration(
+                                color: maize,
+                              )
+                          ),
+                        ],
+                      ),
+                      FutureBuilder(
+                        future: getFriendsKhaledGuest(),
                         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                           if(snapshot.hasData){
                             if(snapshot.connectionState == ConnectionState.done){
